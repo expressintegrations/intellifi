@@ -1,0 +1,10 @@
+gcloud:
+  project: intellifi-project
+  location: us-east1
+  base_url: none
+  tasks:
+    queue: intellifi-events-queue
+    service_account_email: cloud-run-service-account@greenhealthdocs.iam.gserviceaccount.com
+default_encoding: UTF-8
+emerge:
+  secret_key: emerge_authorization
