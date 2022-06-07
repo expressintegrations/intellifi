@@ -1,5 +1,6 @@
-# class AcuityWebhookEvent(BaseModel):
-#   id: int
-#   action: str
-#   calendarID: Optional[str] = None
-#   appointmentTypeID: Optional[str] = None
+from pydantic import BaseModel
+
+
+class HubSpotCompaniesRequest(BaseModel):
+  userId: int
+  userEmail: str
