@@ -51,12 +51,14 @@ async def get_emerge_company_crm_card(
   my_sig = base64.b64encode(computed_sha.digest()).decode()
   print(my_sig)
   print('HMAC test V2 header Hash Lib')
-  testv2 = hashlib.sha256(f"{webhook_secret_key}{request.method}{request.url}{body.decode()}".encode(encoding='utf-8')).digest()
-  print(testv2)
+  testv2 = hashlib.sha256(f"{webhook_secret_key}{request.method}{request.url}{body.decode()}".encode(encoding='utf-8'))
+  print(testv2.digest().decode())
+  print(testv2.hexdigest())
   print('HMAC test V2 hmac lib')
   hmactest = hmac.new(key=webhook_secret_key.encode(), digestmod="sha256")
   hmactest.update(bytes(f"{webhook_secret_key}{request.method}{request.url}{body.decode()}", encoding='UTF-8'))
-  print(hmactest.digest())
+  print(hmactest.digest().decode)
+  print(hmactest.hexdigest())
   if my_sig != expected_sig:
     raise HTTPException(
       status_code=status.HTTP_401_UNAUTHORIZED,
