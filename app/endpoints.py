@@ -33,11 +33,11 @@ async def get_emerge_company_crm_card(
   request: Request,
   cloud_tasks_service: CloudTasksService = Depends(Provide[Container.cloud_tasks_service]),
   webhook_secret_key: str = Depends(Provide[Container.config.hubspot.client_secret]),
-  user_id: int = Query(alias='userId'),
-  user_email: str = Query(alias='userEmail'),
-  associated_object_id: int = Query(alias='associatedObjectId'),
-  associated_object_type: str = Query(alias='associatedObjectType'),
-  portal_id: int = Query(alias='portalId'),
+  user_id: int = Query(default=None, alias='userId'),
+  user_email: str = Query(default=None, alias='userEmail'),
+  associated_object_id: int = Query(default=None, alias='associatedObjectId'),
+  associated_object_type: str = Query(default=None, alias='associatedObjectType'),
+  portal_id: int = Query(default=None, alias='portalId'),
   emerge_company_id: int = None
 ):
   expected_sig = request.headers['x-hubspot-signature']
