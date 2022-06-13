@@ -40,10 +40,10 @@ async def get_emerge_company_crm_card(
   portal_id: int = Query(default=None, alias='portalId'),
   emerge_company_id: int = None
 ):
-  expected_sig = request.headers['x-hubspot-signature']
+  expected_sig = request.headers['x-hubspot-signature-v3']
   print(expected_sig)
   body = await request.body()
-  verify = f"{webhook_secret_key}{request.method}{request.url}{body.decode()}".encode()
+  verify = f"{request.method}{request.url}{body.decode()}{request.headers['x-hubspot-request-timestamp']}".encode(encoding='UTF-8')
   print(verify)
   computed_sha = hmac.new(key=webhook_secret_key.encode(), msg=verify, digestmod="sha256")
   my_sig = base64.b64encode(computed_sha.digest()).decode()
