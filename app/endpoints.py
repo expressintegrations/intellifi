@@ -27,6 +27,9 @@ router = APIRouter()
 async def get_intellifi_company(
   request: Request
 ):
+  body = await request.body()
+  print(body)
+  print(request.headers)
   data = await request.form()
   print(**data)
   return {'results': [
