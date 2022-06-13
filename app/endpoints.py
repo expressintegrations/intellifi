@@ -51,7 +51,7 @@ async def get_emerge_company_crm_card(
   my_sig = base64.b64encode(computed_sha.digest()).decode()
   print(my_sig)
   print('HMAC test V2 header Hash Lib')
-  testv2 = hashlib.sha256(f"{webhook_secret_key}{request.method}{request.url}{body.decode()}")
+  testv2 = hashlib.sha256(f"{webhook_secret_key}{request.method}{request.url}{body.decode()}".encode(encoding='utf-8'))
   print(testv2)
   print('HMAC test V2 hmac lib')
   hmactest = hmac.new(key=webhook_secret_key.encode(), digestmod="sha256")
