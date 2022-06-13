@@ -51,11 +51,11 @@ async def get_emerge_company_crm_card(
   my_sig = base64.b64encode(computed_sha.digest()).decode()
   print(my_sig)
   print('HMAC test V2 header Hash Lib')
-  testv2 = hashlib.sha256(f"{webhook_secret_key}{request.method}{request.url}{body.decode()}".encode(encoding='utf-8'))
+  testv2 = hashlib.sha256(f"{webhook_secret_key}{request.method}{request.url}{body.decode()}".encode(encoding='utf-8')).digest()
   print(testv2)
   print('HMAC test V2 hmac lib')
   hmactest = hmac.new(key=webhook_secret_key.encode(), digestmod="sha256")
-  hmactest.update(bytes(testv2, encoding='UTF-8'))
+  hmactest.update(bytes(f"{webhook_secret_key}{request.method}{request.url}{body.decode()}", encoding='UTF-8'))
   print(hmactest.digest())
   if my_sig != expected_sig:
     raise HTTPException(
