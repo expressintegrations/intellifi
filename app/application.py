@@ -1,4 +1,6 @@
+from ExpressIntegrations.Utils import Utils
 from fastapi import FastAPI
+from google.cloud import firestore
 
 from . import endpoints
 from . import functions
@@ -10,25 +12,36 @@ def create_app(env='prod') -> FastAPI:
   # Load the config variables
   container.config.from_yaml(f'etc/config-{env}.yaml')
 
-  # Get the stored value of the access token and when it expires
-  # db = firestore.Client()
-  # auth_doc = (
-  #     db
-  #     .collection(container.config.get('acuity.firestore.collection'))
-  #     .document(container.config.get('acuity.firestore.document'))
-  # )
-  # auth = auth_doc.get().to_dict()
-  # container.config.trinet.access_token.from_value(auth['access_token'])
-  # container.config.trinet.expires_at.from_value(auth['expires_at'])
+  db = firestore.Client()
 
-  # Get the acuity client secret
-  # container.config.trinet.client_secret.from_value(
-  #     Utils.access_secret_version(
-  #         container.config.get('gcloud.project'),
-  #         container.config.get('acuity.client_secret.location'),
-  #         container.config.get('acuity.client_secret.version')
-  #     )
-  # )
+  # Set the Emerge properties
+  auth_doc = (
+    db
+    .collection(container.config.get('emerge.firestore.collection'))
+    .document(container.config.get('emerge.firestore.auth_document'))
+  )
+  auth = auth_doc.get().to_dict()
+  container.config.emerge.access_token.from_value(auth[container.config.get('emerge.firestore.access_token.location')])
+
+  # Set the HubSpot properties
+  auth_doc = (
+    db
+    .collection(container.config.get('hubspot.firestore.collection'))
+    .document(container.config.get('hubspot.firestore.auth_document'))
+  )
+  auth = auth_doc.get().to_dict()
+  container.config.hubspot.access_token.from_value(auth['access_token'])
+  container.config.hubspot.expires_at.from_value(auth['expires_at'])
+  container.config.hubspot.refresh_token.from_value(auth['refresh_token'])
+
+  # Get the HubSpot client secret
+  container.config.hubspot.client_secret.from_value(
+    Utils.access_secret_version(
+      container.config.get('gcloud.project'),
+      container.config.get('hubspot.client_secret.location'),
+      container.config.get('hubspot.client_secret.version')
+    )
+  )
 
   # Wire up the endpoints for dependency injection
   container.wire(modules=[endpoints, functions])
