@@ -41,8 +41,10 @@ async def get_emerge_company_crm_card(
   emerge_company_id: int = None
 ):
   expected_sig = request.headers['x-hubspot-signature']
+  print(expected_sig)
   body = await request.body()
   verify = f"{webhook_secret_key}{request.method}{request.url}{body.decode()}".encode()
+  print(verify)
   computed_sha = hmac.new(key=webhook_secret_key.encode(), msg=verify, digestmod="sha256")
   my_sig = base64.b64encode(computed_sha.digest()).decode()
   if my_sig != expected_sig:
