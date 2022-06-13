@@ -41,6 +41,7 @@ async def get_emerge_company_crm_card(
   emerge_company_id: int = None
 ):
   expected_sig = request.headers['x-hubspot-signature-v3']
+  print(request.headers)
   print(expected_sig)
   body = await request.body()
   verify = f"{request.method}{request.url}{body.decode()}{request.headers['x-hubspot-request-timestamp']}".encode(encoding='UTF-8')
