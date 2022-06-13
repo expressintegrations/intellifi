@@ -25,8 +25,7 @@ router = APIRouter()
 @router.get('/intellifi/v1/companies')
 @inject
 async def get_intellifi_company(
-  request: Request,
-  associatedcompanyid:
+  request: Request
 ):
   body = await request.body()
   print(body)
