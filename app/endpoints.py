@@ -1,6 +1,7 @@
 import base64
 import hmac
 import traceback
+import hashlib
 
 from dependency_injector.wiring import Provide
 from dependency_injector.wiring import inject
@@ -48,6 +49,14 @@ async def get_emerge_company_crm_card(
   print(verify)
   computed_sha = hmac.new(key=webhook_secret_key.encode(), msg=verify, digestmod="sha256")
   my_sig = base64.b64encode(computed_sha.digest()).decode()
+  print(my_sig)
+  print('HMAC test V2 header Hash Lib')
+  testv2 = hashlib.sha256(f"{webhook_secret_key}{request.method}{request.url}{body.decode()}")
+  print(testv2)
+  print('HMAC test V2 hmac lib')
+  hmactest = hmac.new(key=webhook_secret_key.encode(), digestmod="sha256")
+  hmactest.update(bytes(testv2, encoding='UTF-8'))
+  print(hmactest.digest())
   if my_sig != expected_sig:
     raise HTTPException(
       status_code=status.HTTP_401_UNAUTHORIZED,
