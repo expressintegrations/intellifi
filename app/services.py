@@ -6,7 +6,7 @@ from google.cloud import firestore, logging, tasks_v2
 
 from .models import EmergeCompanyBillingInfo, EmergeCompanyInfo
 
-log_name = 'intellifi'
+log_name = 'intellifi:services'
 
 
 class BaseService:
@@ -120,7 +120,7 @@ class HubSpotService(BaseService):
         super().__init__()
 
     def update_company(self, company_id, properties):
-        self.logger.log_text('Updating company', severity = 'DEBUG')
+        self.logger.log_text(f"Updating company {company_id} with properties {properties}", severity = 'DEBUG')
         return self.hubspot_client.update_record(
             object_type = 'companies',
             object_id = company_id,

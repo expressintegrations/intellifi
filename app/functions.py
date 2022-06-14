@@ -1,10 +1,14 @@
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
+from google.cloud import logging
 
 from .containers import Container
 from .models import HubSpotCompanySyncRequest
 from .services import EmergeService, HubSpotService
 
+log_name = 'intellifi:functions'
+logging_client = logging.Client()
+logger = logging_client.logger(log_name)
 
 @inject
 def sync_emerge_company_to_hubspot(
@@ -17,9 +21,13 @@ def sync_emerge_company_to_hubspot(
         year = hubspot_company_sync_request.year,
         month = hubspot_company_sync_request.month
     )
-    hubspot_service.update_company(
+    update_result = hubspot_service.update_company(
         company_id = hubspot_company_sync_request.object_id,
         properties = emerge_company.to_hubspot_company()
+    )
+    logger.log_text(
+        f"Company update result for {hubspot_company_sync_request.object_id}: {update_result}",
+        severity = 'DEBUG'
     )
 
 

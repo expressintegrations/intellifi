@@ -14,10 +14,11 @@ from .containers import Container
 from .models import HubSpotCompanySyncRequest, HubSpotWebhookEvent
 from .services import CloudTasksService
 
-log_name = 'intellifi'
-router = APIRouter()
+log_name = 'intellifi:endpoints'
 logging_client = logging.Client()
 logger = logging_client.logger(log_name)
+
+router = APIRouter()
 
 
 @router.get('/intellifi/v1/companies')
@@ -40,7 +41,8 @@ async def get_emerge_company_crm_card(
         )
     expected_sig = request.headers.get('x-hubspot-signature-v3')
     body = await request.body()
-    message = f"{request.method}{str(request.url).replace('http://', 'https://')}{body.decode()}{request.headers.get('x-hubspot-request-timestamp')}"
+    message = f"{request.method}{str(request.url).replace('http://', 'https://')}{body.decode()}" \
+              f"{request.headers.get('x-hubspot-request-timestamp')}"
     computed_sha = hmac.new(key = webhook_secret_key.encode(), msg = message.encode(), digestmod = hashlib.sha256)
     my_sig = base64.b64encode(computed_sha.digest()).decode()
     if my_sig != expected_sig:
@@ -49,7 +51,8 @@ async def get_emerge_company_crm_card(
             detail = "You are not authorized",
         )
     logger.log_text(
-        f"User {user_email}({user_id}) requested Emerge CRM card for Company: {emerge_company_id} on {associated_object_type} ({associated_object_id}) for portal {portal_id}",
+        f"User {user_email}({user_id}) requested Emerge CRM card for Company: "
+        f"{emerge_company_id} on {associated_object_type} ({associated_object_id}) for portal {portal_id}",
         severity = 'DEBUG'
     )
 
@@ -82,7 +85,8 @@ async def process_hubspot_events(
 ):
     expected_sig = request.headers['x-hubspot-signature-v3']
     body = await request.body()
-    message = f"{request.method}{str(request.url).replace('http://', 'https://')}{body.decode()}{request.headers['x-hubspot-request-timestamp']}"
+    message = f"{request.method}{str(request.url).replace('http://', 'https://')}{body.decode()}" \
+              f"{request.headers['x-hubspot-request-timestamp']}"
     computed_sha = hmac.new(key = webhook_secret_key.encode(), msg = message.encode(), digestmod = hashlib.sha256)
     my_sig = base64.b64encode(computed_sha.digest()).decode()
     if my_sig != expected_sig:
