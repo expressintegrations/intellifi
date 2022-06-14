@@ -1,3 +1,5 @@
+import json
+
 from ExpressIntegrations.Emerge import emerge
 from ExpressIntegrations.HubSpot import hubspot
 from google.cloud import firestore, logging
@@ -56,7 +58,7 @@ class CloudTasksService(BaseService):
 
     if payload is not None:
       # The API expects a payload of type bytes.
-      converted_payload = payload.encode()
+      converted_payload = json.dumps(payload).encode()
 
       # Add the payload to the request.
       task['http_request']['body'] = converted_payload
