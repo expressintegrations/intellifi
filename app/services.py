@@ -41,7 +41,7 @@ class CloudTasksService(BaseService):
       relative_handler_uri: str,
       payload: dict = None
   ) -> None:
-    self.logger.log_text(f"Enqueueing task on {self.base_url}{relative_handler_uri}", severity='DEBUG')
+    self.logger.log_text(f"Enqueueing task on {self.base_url}/{relative_handler_uri}", severity='DEBUG')
     parent = self.cloud_tasks_client.queue_path(self.project, self.location, self.queue)
 
     # Construct the request body.
