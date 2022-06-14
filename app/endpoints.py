@@ -61,7 +61,7 @@ async def get_emerge_company_crm_card(
     payload=hubspot_company_sync_request.dict()
   )
   return {'results': [
-    functions.get_emerge_company(hubspot_company_sync_request=hubspot_company_sync_request)
+    functions.get_emerge_company(hubspot_company_sync_request=hubspot_company_sync_request).to_hubspot_crm_card()
   ]}
 
 
@@ -71,7 +71,7 @@ async def process_hubspot_events(
   request: Request,
   cloud_tasks_service: CloudTasksService = Depends(Provide[Container.cloud_tasks_service]),
   webhook_secret_key: str = Depends(Provide[Container.config.hubspot.client_secret]),
-  events: List[HubSpotWebhookEvent] = []
+  events: List[HubSpotWebhookEvent] = tuple()
 ):
   expected_sig = request.headers['x-hubspot-signature-v3']
   body = await request.body()
