@@ -52,14 +52,17 @@ async def get_emerge_company_crm_card(
       detail="You are not authorized",
     )
   logger.log_text(f"User {user_email}({user_id}) requested Emerge CRM card for Company: {emerge_company_id} on {associated_object_type} ({associated_object_id}) for portal {portal_id}", severity='DEBUG')
+
   hubspot_company_sync_request = HubSpotCompanySyncRequest(
     object_id=associated_object_id,
     emerge_company_id=emerge_company_id
   )
-  cloud_tasks_service.enqueue(
-    'hubspot/v1/events/worker',
-    payload=hubspot_company_sync_request.dict()
-  )
+
+  if associated_object_type == 'COMPANY':
+    cloud_tasks_service.enqueue(
+      'hubspot/v1/events/worker',
+      payload=hubspot_company_sync_request.dict()
+    )
   return {'results': [
     functions.get_emerge_company(hubspot_company_sync_request=hubspot_company_sync_request).to_hubspot_crm_card()
   ]}
