@@ -48,7 +48,7 @@ class CloudTasksService(BaseService):
     task = {
         'http_request': {  # Specify the type of request.
             'http_method': tasks_v2.HttpMethod.POST,
-            'url': f"{self.base_url}{relative_handler_uri}",  # The full url path that the task will be sent to.
+            'url': f"{self.base_url}/{relative_handler_uri}",  # The full url path that the task will be sent to.
             'oidc_token': {
                 'service_account_email': self.service_account_email,
                 'audience': self.base_url
@@ -125,7 +125,13 @@ class HubSpotService(BaseService):
       properties=properties
     )['content']
 
-  def get_company_by_emerge_company(self, emerge_company_id=None, property_names=[], after=None, sorts=[]):
+  def get_company_by_emerge_company(
+    self,
+    emerge_company_id: int = None,
+    property_names: list = tuple(),
+    after: int = None,
+    sorts: list = tuple()
+  ):
     self.logger.log_text('Getting company by emerge company', severity='DEBUG')
     return self.hubspot_client.search_records_by_property_value(
       object_type='companies',
