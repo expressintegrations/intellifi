@@ -42,23 +42,10 @@ async def get_emerge_company_crm_card(
   emerge_company_id: int = None
 ):
   expected_sig = request.headers['x-hubspot-signature-v3']
-  print(request.headers)
-  print(expected_sig)
   body = await request.body()
-  verify = f"{request.method}{request.url}{body.decode()}{request.headers['x-hubspot-request-timestamp']}".encode(encoding='UTF-8')
-  print(verify)
-  computed_sha = hmac.new(key=webhook_secret_key.encode(), msg=verify, digestmod="sha256")
+  message = f"{request.method}{str(request.url).replace('http://', 'https://')}{body.decode()}{request.headers['x-hubspot-request-timestamp']}"
+  computed_sha = hmac.new(key=webhook_secret_key.encode(), msg=message.encode(), digestmod=hashlib.sha256)
   my_sig = base64.b64encode(computed_sha.digest()).decode()
-  print(my_sig)
-  print('HMAC test V2 header Hash Lib')
-  testv2 = hashlib.sha256(f"{webhook_secret_key}{request.method}{request.url}{body.decode()}".encode(encoding='utf-8'))
-  print(testv2.digest().decode())
-  print(testv2.hexdigest())
-  print('HMAC test V2 hmac lib')
-  hmactest = hmac.new(key=webhook_secret_key.encode(), digestmod="sha256")
-  hmactest.update(bytes(f"{webhook_secret_key}{request.method}{request.url}{body.decode()}", encoding='UTF-8'))
-  print(hmactest.digest().decode)
-  print(hmactest.hexdigest())
   if my_sig != expected_sig:
     raise HTTPException(
       status_code=status.HTTP_401_UNAUTHORIZED,
@@ -86,10 +73,10 @@ async def process_hubspot_events(
   webhook_secret_key: str = Depends(Provide[Container.config.hubspot.client_secret]),
   events: List[HubSpotWebhookEvent] = []
 ):
-  expected_sig = request.headers['x-hubspot-signature']
+  expected_sig = request.headers['x-hubspot-signature-v3']
   body = await request.body()
-  verify = f"{webhook_secret_key}{request.method}{request.url}{body.decode()}".encode()
-  computed_sha = hmac.new(key=webhook_secret_key.encode(), msg=verify, digestmod="sha256")
+  message = f"{request.method}{str(request.url).replace('http://', 'https://')}{body.decode()}{request.headers['x-hubspot-request-timestamp']}"
+  computed_sha = hmac.new(key=webhook_secret_key.encode(), msg=message.encode(), digestmod=hashlib.sha256)
   my_sig = base64.b64encode(computed_sha.digest()).decode()
   if my_sig != expected_sig:
     raise HTTPException(
