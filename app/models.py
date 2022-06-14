@@ -20,15 +20,9 @@ class HubSpotWebhookEvent(BaseModel):
 
 class HubSpotCompanySyncRequest(BaseModel):
   object_id: int
-  year: int
-  month: int
+  year: int = datetime.today().year
+  month: int = datetime.today().month
   emerge_company_id: int
-
-  def __init__(self):
-    today = datetime.today()
-    self.year = today.year
-    self.month = today.month
-    super().__init__()
 
 
 class EmergeSales(BaseModel):
