@@ -5,7 +5,7 @@ import hashlib
 
 from dependency_injector.wiring import Provide
 from dependency_injector.wiring import inject
-from fastapi import APIRouter
+from fastapi import APIRouter, Form
 from fastapi import Depends
 from fastapi import HTTPException
 from fastapi import Request
@@ -20,7 +20,7 @@ from .containers import Container
 from .services import CloudTasksService
 
 from .models import HubSpotWebhookEvent, HubSpotCompanySyncRequest
-from typing import List
+from typing import List, Optional
 
 log_name = 'intellifi'
 router = APIRouter()
@@ -39,7 +39,7 @@ async def get_emerge_company_crm_card(
   associated_object_id: int = Query(default=None, alias='associatedObjectId'),
   associated_object_type: str = Query(default=None, alias='associatedObjectType'),
   portal_id: int = Query(default=None, alias='portalId'),
-  emerge_company_id: int = None
+  emerge_company_id: Optional[int] = Form(None)
 ):
   expected_sig = request.headers['x-hubspot-signature-v3']
   body = await request.body()

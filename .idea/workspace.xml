@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="filtering sync requests" />
+    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="filtering sync requests">
+      <change beforePath="$PROJECT_DIR$/app/endpoints.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/endpoints.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -243,7 +245,14 @@
       <option name="project" value="LOCAL" />
       <updated>1655179258478</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="filtering sync requests">
+      <created>1655211187025</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1655211187025</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
