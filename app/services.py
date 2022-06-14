@@ -6,7 +6,7 @@ from google.cloud import firestore, logging, tasks_v2
 
 from .models import EmergeCompanyBillingInfo, EmergeCompanyInfo
 
-log_name = 'intellifi:services'
+log_name = 'intellifi.services'
 
 
 class BaseService:

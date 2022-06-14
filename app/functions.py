@@ -6,7 +6,7 @@ from .containers import Container
 from .models import HubSpotCompanySyncRequest
 from .services import EmergeService, HubSpotService
 
-log_name = 'intellifi:functions'
+log_name = 'intellifi.functions'
 logging_client = logging.Client()
 logger = logging_client.logger(log_name)
 

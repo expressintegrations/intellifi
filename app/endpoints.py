@@ -14,7 +14,7 @@ from .containers import Container
 from .models import HubSpotCompanySyncRequest, HubSpotWebhookEvent
 from .services import CloudTasksService
 
-log_name = 'intellifi:endpoints'
+log_name = 'intellifi.endpoints'
 logging_client = logging.Client()
 logger = logging_client.logger(log_name)
 
