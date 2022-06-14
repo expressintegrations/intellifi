@@ -107,7 +107,10 @@ async def process_hubspot_events(
                     ).dict()
                 )
     except Exception:
-        print(traceback.format_exc())
+        logger.log_text(
+            traceback.format_exc(),
+            severity = 'DEBUG'
+        )
         raise HTTPException(
             status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail = "Failed to enqueue the hubspot event",
@@ -120,7 +123,10 @@ def hubspot_events_worker(event: HubSpotCompanySyncRequest):
     try:
         functions.sync_emerge_company_to_hubspot(hubspot_company_sync_request = event)
     except Exception:
-        print(traceback.format_exc())
+        logger.log_text(
+            traceback.format_exc(),
+            severity = 'DEBUG'
+        )
         raise HTTPException(
             status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail = "Failed to process the acuity event",
@@ -140,7 +146,10 @@ def sync_emerge_companies_to_hubspot(
     try:
         functions.sync_emerge_companies_to_hubspot()
     except Exception:
-        print(traceback.format_exc())
+        logger.log_text(
+            traceback.format_exc(),
+            severity = 'DEBUG'
+        )
         raise HTTPException(
             status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail = "Failed to sync the emerge companies",

@@ -10,6 +10,7 @@ log_name = 'intellifi:functions'
 logging_client = logging.Client()
 logger = logging_client.logger(log_name)
 
+
 @inject
 def sync_emerge_company_to_hubspot(
     hubspot_company_sync_request: HubSpotCompanySyncRequest,
@@ -50,15 +51,24 @@ def sync_emerge_companies_to_hubspot(
 ):
     for customer in emerge_service.get_all_customers():
         companies = hubspot_service.get_company_by_emerge_company(emerge_company_id = customer.company_id)
-        print(f"Companies search result for {customer.company_id}: {companies}")
+        logger.log_text(
+            f"Companies search result for {customer.company_id}: {companies}",
+            severity = 'DEBUG'
+        )
         if companies['total'] == 0:
             # do nothing for now
-            print(f"No Company found in HubSpot with Emerge Company ID {customer.company_id}")
+            logger.log_text(
+                f"No Company found in HubSpot with Emerge Company ID {customer.company_id}",
+                severity = 'DEBUG'
+            )
         elif companies['total'] == 1:
             company = companies['results'][0]
             # update
-            print(f"Updating company {company['id']}")
-            result = sync_emerge_company_to_hubspot(
+            logger.log_text(
+                f"Updating company {company['id']}",
+                severity = 'DEBUG'
+            )
+            sync_emerge_company_to_hubspot(
                 hubspot_company_sync_request = HubSpotCompanySyncRequest(
                     object_id = company['id'],
                     emerge_company_id = customer.company_id
