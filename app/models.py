@@ -83,7 +83,7 @@ class EmergeCompanyBillingInfo(BaseModel):
     }
 
   def to_hubspot_crm_card(self):
-    return {
+    resp = {
       "objectId": self.company_id,
       "title": self.company_name,
       "link": f"https://emerge.intelifi.com/companies/{self.company_id}",
@@ -99,3 +99,4 @@ class EmergeCompanyBillingInfo(BaseModel):
       "product_types_ytd": self.product_types_ytd.to_string() if self.product_types_ytd else None,
       "last_report_run": int(self.last_report_run.timestamp() * 1000) if self.last_report_run else None
     }
+    return {k: v for k, v in resp.items() if v is not None}
