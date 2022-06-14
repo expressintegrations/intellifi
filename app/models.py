@@ -22,7 +22,7 @@ class HubSpotCompanySyncRequest(BaseModel):
   object_id: int
   year: int = datetime.today().year
   month: int = datetime.today().month
-  emerge_company_id: int
+  emerge_company_id: Optional[int]
 
 
 class EmergeSales(BaseModel):
