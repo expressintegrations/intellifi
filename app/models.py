@@ -86,22 +86,28 @@ class EmergeCompanyBillingInfo(BaseModel):
         }
 
     def to_hubspot_crm_card(self):
-        resp = {
-            "objectId": self.company_id,
-            "title": self.company_name,
-            "link": f"https://emerge.intelifi.com/companies/{self.company_id}",
-            "date_opened": int(self.date_opened.timestamp() * 1000) if self.date_opened else None,
-            "number_of_locations": int(self.number_of_locations) if self.number_of_locations else None,
-            "account_status": self.account_status.upper() if self.account_status else None,
-            "number_of_users": int(self.number_of_users) if self.number_of_users else None,
-            "sales_last_month": self.sales_last_month.to_string() if self.sales_last_month else None,
-            "sales_current_month": self.sales_current_month.to_string() if self.sales_current_month else None,
-            "sales_ytd": self.sales_ytd.to_string() if self.sales_ytd else None,
-            "product_types_last_month": self.product_types_last_month.to_string() if self.product_types_last_month
-            else None,
-            "product_types_current_month": self.product_types_current_month.to_string() if
-            self.product_types_current_month else None,
-            "product_types_ytd": self.product_types_ytd.to_string() if self.product_types_ytd else None,
-            "last_report_run": int(self.last_report_run.timestamp() * 1000) if self.last_report_run else None
+        results = []
+        if self.company_id:
+            data = {
+                "objectId": self.company_id,
+                "title": self.company_name,
+                "link": f"https://emerge.intelifi.com/companies/{self.company_id}",
+                "date_opened": int(self.date_opened.timestamp() * 1000) if self.date_opened else None,
+                "number_of_locations": int(self.number_of_locations) if self.number_of_locations else None,
+                "account_status": self.account_status.upper() if self.account_status else None,
+                "number_of_users": int(self.number_of_users) if self.number_of_users else None,
+                "sales_last_month": self.sales_last_month.to_string() if self.sales_last_month else None,
+                "sales_current_month": self.sales_current_month.to_string() if self.sales_current_month else None,
+                "sales_ytd": self.sales_ytd.to_string() if self.sales_ytd else None,
+                "product_types_last_month": self.product_types_last_month.to_string() if self.product_types_last_month
+                else None,
+                "product_types_current_month": self.product_types_current_month.to_string() if
+                self.product_types_current_month else None,
+                "product_types_ytd": self.product_types_ytd.to_string() if self.product_types_ytd else None,
+                "last_report_run": int(self.last_report_run.timestamp() * 1000) if self.last_report_run else None
+            }
+            results.append({k: v for k, v in data.items() if v is not None})
+
+        return {
+            'results': results
         }
-        return {k: v for k, v in resp.items() if v is not None}

@@ -66,13 +66,9 @@ async def get_emerge_company_crm_card(
             'hubspot/v1/events/worker',
             payload = hubspot_company_sync_request.dict()
         )
-    return {
-        'results': [
-            functions.get_emerge_company(
-                hubspot_company_sync_request = hubspot_company_sync_request
-            ).to_hubspot_crm_card()
-        ]
-    }
+    return functions.get_emerge_company(
+        hubspot_company_sync_request = hubspot_company_sync_request
+    ).to_hubspot_crm_card()
 
 
 @router.post('/hubspot/v1/events')
