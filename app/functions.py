@@ -17,6 +17,12 @@ def sync_emerge_company_to_hubspot(
     emerge_service: EmergeService = Depends(Provide[Container.emerge_service]),
     hubspot_service: HubSpotService = Depends(Provide[Container.hubspot_service])
 ):
+    if not hubspot_company_sync_request.emerge_company_id:
+        logger.log_text(
+            f"Emerge Company ID was blank for Company {hubspot_company_sync_request.object_id}. Skip processing...",
+            severity = 'DEBUG'
+        )
+        return
     emerge_company = emerge_service.get_customer_billing_info(
         company_id = hubspot_company_sync_request.emerge_company_id,
         year = hubspot_company_sync_request.year,
