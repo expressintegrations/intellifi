@@ -53,12 +53,12 @@ class EmergeCompanyInfo(BaseModel):
 
 
 class EmergeCompanyBillingInfo(BaseModel):
-    company_id: int = pydantic.Field(alias = "EmergeCompanyId")
-    company_name: str = pydantic.Field(alias = "EmergeCompanyName")
-    account_status: str = pydantic.Field(alias = "AccountStatus")
-    date_opened: datetime = pydantic.Field(alias = "DateOpened")
-    number_of_users: int = pydantic.Field(alias = "NumberOfUsers")
-    number_of_locations: int = pydantic.Field(alias = "NumberOfLocations")
+    company_id: Optional[int] = pydantic.Field(alias = "EmergeCompanyId")
+    company_name: Optional[str] = pydantic.Field(alias = "EmergeCompanyName")
+    account_status: Optional[str] = pydantic.Field(alias = "AccountStatus")
+    date_opened: Optional[datetime] = pydantic.Field(alias = "DateOpened")
+    number_of_users: Optional[int] = pydantic.Field(alias = "NumberOfUsers")
+    number_of_locations: Optional[int] = pydantic.Field(alias = "NumberOfLocations")
     last_report_run: Optional[datetime] = pydantic.Field(alias = "LastReportRun")
     sales_last_month: Optional[EmergeSales] = pydantic.Field(alias = "SalesLastMonth")
     sales_current_month: Optional[EmergeSales] = pydantic.Field(alias = "SalesCurrentMonth")
