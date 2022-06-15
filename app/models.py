@@ -76,10 +76,12 @@ class EmergeCompanyBillingInfo(BaseModel):
         ):
             change_in_sales = (self.sales_current_month.sales - self.sales_last_month.sales) / \
                               self.sales_last_month.sales * 100
-            if change_in_sales < 0:
+            if change_in_sales < -20:
                 change_in_sales = f"{'{:,.0f}'.format(change_in_sales)}% 🔻"
-            else:
+            elif change_in_sales > 20:
                 change_in_sales = f"{'{:,.0f}'.format(change_in_sales)}% ⭐"
+            else:
+                f"{'{:,.0f}'.format(change_in_sales)}%"
         return {
             "name": self.company_name if self.company_name else None,
             "date_opened": int(self.date_opened.timestamp() * 1000) if self.date_opened else None,
@@ -112,10 +114,12 @@ class EmergeCompanyBillingInfo(BaseModel):
             ):
                 change_in_sales = (self.sales_current_month.sales - self.sales_last_month.sales) / \
                                   self.sales_last_month.sales * 100
-                if change_in_sales < 0:
+                if change_in_sales < -20:
                     change_in_sales = f"{'{:,.0f}'.format(change_in_sales)}% 🔻"
-                else:
+                elif change_in_sales > 20:
                     change_in_sales = f"{'{:,.0f}'.format(change_in_sales)}% ⭐"
+                else:
+                    f"{'{:,.0f}'.format(change_in_sales)}%"
             data = {
                 "objectId": self.company_id,
                 "title": self.company_name,
