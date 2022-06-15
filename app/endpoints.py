@@ -2,10 +2,10 @@ import base64
 import hashlib
 import hmac
 import traceback
-from typing import List, Optional
+from typing import List
 
 from dependency_injector.wiring import inject, Provide
-from fastapi import APIRouter, Depends, Form, HTTPException, Query, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.responses import HTMLResponse
 from google.cloud import logging
 
@@ -32,7 +32,7 @@ async def get_emerge_company_crm_card(
     associated_object_id: int = Query(default = None, alias = 'associatedObjectId'),
     associated_object_type: str = Query(default = None, alias = 'associatedObjectType'),
     portal_id: int = Query(default = None, alias = 'portalId'),
-    emerge_company_id: Optional[int] = Form(None)
+    emerge_company_id: str = None
 ):
     if 'x-hubspot-signature-v3' not in request.headers or 'x-hubspot-request-timestamp' not in request.headers:
         raise HTTPException(
@@ -50,6 +50,7 @@ async def get_emerge_company_crm_card(
             status_code = status.HTTP_401_UNAUTHORIZED,
             detail = "You are not authorized",
         )
+    emerge_company_id = int(emerge_company_id) if emerge_company_id != '' else None
     logger.log_text(
         f"User {user_email}({user_id}) requested Emerge CRM card for Company: "
         f"{emerge_company_id} on {associated_object_type} ({associated_object_id}) for portal {portal_id}",
