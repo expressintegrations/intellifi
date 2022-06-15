@@ -71,12 +71,11 @@ class EmergeCompanyBillingInfo(BaseModel):
         change_in_sales = "N/A"
         if (
             self.sales_current_month
-            and self.sales_current_month.sales
             and self.sales_last_month
-            and self.sales_last_month.sales
+            and self.sales_last_month.sales > 0
         ):
             change_in_sales = (self.sales_current_month.sales - self.sales_last_month.sales) / \
-                              self.sales_last_month.sales
+                              self.sales_last_month.sales * 100
             if change_in_sales < 0:
                 change_in_sales = f"{'{:,.0f}'.format(change_in_sales)}% 🔻"
             else:
