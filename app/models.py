@@ -68,6 +68,15 @@ class EmergeCompanyBillingInfo(BaseModel):
     product_types_ytd: Optional[EmergeProductTypes] = pydantic.Field(alias = "ProductsTypeYTD")
 
     def to_hubspot_company(self):
+        change_in_sales = "N/A"
+        if (
+            self.sales_current_month
+            and self.sales_current_month.sales
+            and self.sales_last_month
+            and self.sales_last_month.sales
+        ):
+            change_in_sales = (self.sales_current_month.sales - self.sales_last_month.sales) / \
+                              self.sales_last_month.sales
         return {
             "name": self.company_name if self.company_name else None,
             "date_opened": int(self.date_opened.timestamp() * 1000) if self.date_opened else None,
@@ -77,6 +86,7 @@ class EmergeCompanyBillingInfo(BaseModel):
             "sales_last_month": self.sales_last_month.to_string() if self.sales_last_month else None,
             "sales_current_month": self.sales_current_month.to_string() if self.sales_current_month else None,
             "sales_ytd": self.sales_ytd.to_string() if self.sales_ytd else None,
+            "change_in_sales": f"{'{:,.0f}'.format(change_in_sales)}% 🔻",
             "product_types_last_month": self.product_types_last_month.to_string() if self.product_types_last_month
             else None,
             "product_types_current_month": self.product_types_current_month.to_string() if
@@ -88,6 +98,15 @@ class EmergeCompanyBillingInfo(BaseModel):
     def to_hubspot_crm_card(self):
         results = []
         if self.company_id:
+            change_in_sales = "N/A"
+            if (
+                self.sales_current_month
+                and self.sales_current_month.sales
+                and self.sales_last_month
+                and self.sales_last_month.sales
+            ):
+                change_in_sales = (self.sales_current_month.sales - self.sales_last_month.sales) / \
+                                  self.sales_last_month.sales
             data = {
                 "objectId": self.company_id,
                 "title": self.company_name,
@@ -99,6 +118,7 @@ class EmergeCompanyBillingInfo(BaseModel):
                 "sales_last_month": self.sales_last_month.to_string() if self.sales_last_month else None,
                 "sales_current_month": self.sales_current_month.to_string() if self.sales_current_month else None,
                 "sales_ytd": self.sales_ytd.to_string() if self.sales_ytd else None,
+                "change_in_sales": f"{'{:,.0f}'.format(change_in_sales)}% 🔻",
                 "product_types_last_month": self.product_types_last_month.to_string() if self.product_types_last_month
                 else None,
                 "product_types_current_month": self.product_types_current_month.to_string() if
