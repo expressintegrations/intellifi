@@ -149,7 +149,7 @@ class EmergeCompanyBillingInfo(BaseModel):
                 if change_in_sales < -20:
                     change_in_sales = f"{'{:,.0f}'.format(change_in_sales)}% 🔻"
                 elif change_in_sales > 20:
-                    change_in_sales = f"{'{:,.0f}'.format(change_in_sales)}% ⭐"
+                    change_in_sales = f"{'{:,.0f}'.format(change_in_sales)}% ▲"
                 else:
                     f"{'{:,.0f}'.format(change_in_sales)}%"
             data = {
