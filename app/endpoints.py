@@ -11,7 +11,7 @@ from google.cloud import logging
 
 from . import functions
 from .containers import Container
-from .models import HubSpotCompanySyncRequest, HubSpotWebhookEvent
+from .models import HubSpotCompanySyncRequest, HubSpotDealSyncRequest, HubSpotWebhookEvent
 from .services import CloudTasksService
 
 log_name = 'intellifi.endpoints'
@@ -95,12 +95,20 @@ async def process_hubspot_events(
         for event in events:
             if event.propertyName == 'emerge_company_id' and event.subscriptionType == 'company.propertyChange':
                 cloud_tasks_service.enqueue(
-                    'hubspot/v1/events/worker',
+                    'hubspot/v1/company-sync/worker',
                     payload = HubSpotCompanySyncRequest(
                         object_id = event.objectId,
                         emerge_company_id = int(event.propertyValue) if event.propertyValue and len(
                             event.propertyValue
                         ) > 0 else None
+                    ).dict()
+                )
+
+            if event.propertyName == 'customer_deal' and event.subscriptionType == 'deal.propertyChange':
+                cloud_tasks_service.enqueue(
+                    'hubspot/v1/deal-sync/worker',
+                    payload = HubSpotDealSyncRequest(
+                        object_id = event.objectId
                     ).dict()
                 )
     except Exception:
@@ -115,8 +123,8 @@ async def process_hubspot_events(
     return HTMLResponse(status_code = status.HTTP_204_NO_CONTENT)
 
 
-@router.post('/hubspot/v1/events/worker')
-def hubspot_events_worker(event: HubSpotCompanySyncRequest):
+@router.post('/hubspot/v1/company-sync/worker')
+def hubspot_company_sync_worker(event: HubSpotCompanySyncRequest):
     try:
         functions.sync_emerge_company_to_hubspot(hubspot_company_sync_request = event)
     except Exception:
@@ -126,7 +134,23 @@ def hubspot_events_worker(event: HubSpotCompanySyncRequest):
         )
         raise HTTPException(
             status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail = "Failed to process the acuity event",
+            detail = "Failed to process the hubspot company event",
+        )
+    return HTMLResponse(status_code = status.HTTP_204_NO_CONTENT)
+
+
+@router.post('/hubspot/v1/deal-sync/worker')
+def hubspot_deal_sync_worker(event: HubSpotDealSyncRequest):
+    try:
+        functions.associate_customer_deal(hubspot_deal_sync_request = event)
+    except Exception:
+        logger.log_text(
+            traceback.format_exc(),
+            severity = 'DEBUG'
+        )
+        raise HTTPException(
+            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail = "Failed to process the hubspot deal event",
         )
     return HTMLResponse(status_code = status.HTTP_204_NO_CONTENT)
 

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 
 import pydantic
 from pydantic import BaseModel
@@ -24,6 +24,37 @@ class HubSpotCompanySyncRequest(BaseModel):
     year: int = datetime.today().year
     month: int = datetime.today().month
     emerge_company_id: Optional[int]
+
+
+class HubSpotDealSyncRequest(BaseModel):
+    object_id: int
+
+
+class HubSpotAssociation(BaseModel):
+    id: str
+    type: str
+
+
+class HubSpotAssociationFrom(BaseModel):
+    id: str
+
+
+class HubSpotAssociationResult(BaseModel):
+    from_object: HubSpotAssociationFrom = pydantic.Field(alias = "from")
+    to: List[HubSpotAssociation]
+
+    def first(self):
+        return self.to.pop(0) if len(self.to) > 0 else None
+
+
+class HubSpotAssociationBatchReadResponse(BaseModel):
+    status: str
+    results: List[HubSpotAssociationResult]
+    started_at: datetime = pydantic.Field(alias = "startedAt")
+    completed_at: datetime = pydantic.Field(alias = "completedAt")
+
+    def first(self):
+        return self.results[0].to[0] if len(self.results) > 0 and len(self.results[0].to) > 0 else None
 
 
 class EmergeSales(BaseModel):

@@ -3,7 +3,7 @@ from fastapi import Depends
 from google.cloud import logging
 
 from .containers import Container
-from .models import HubSpotCompanySyncRequest
+from .models import HubSpotCompanySyncRequest, HubSpotDealSyncRequest
 from .services import EmergeService, HubSpotService
 
 log_name = 'intellifi.functions'
@@ -34,6 +34,24 @@ def sync_emerge_company_to_hubspot(
     )
     logger.log_text(
         f"Company update result for {hubspot_company_sync_request.object_id}: {update_result}",
+        severity = 'DEBUG'
+    )
+
+
+@inject
+def associate_customer_deal(
+    hubspot_deal_sync_request: HubSpotDealSyncRequest,
+    hubspot_service: HubSpotService = Depends(Provide[Container.hubspot_service])
+):
+    associations = hubspot_service.get_company_for_deal(
+        deal_id = hubspot_deal_sync_request.object_id
+    )
+    company_association_result = hubspot_service.set_customer_company_for_deal(
+        deal_id = hubspot_deal_sync_request.object_id,
+        company_id = associations.first()
+    )
+    logger.log_text(
+        f"Company association result for {hubspot_deal_sync_request.object_id}: {company_association_result}",
         severity = 'DEBUG'
     )
 

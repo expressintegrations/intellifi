@@ -4,7 +4,7 @@ from ExpressIntegrations.Emerge import emerge
 from ExpressIntegrations.HubSpot import hubspot
 from google.cloud import firestore, logging, tasks_v2
 
-from .models import EmergeCompanyBillingInfo, EmergeCompanyInfo
+from .models import EmergeCompanyBillingInfo, EmergeCompanyInfo, HubSpotAssociationBatchReadResponse
 
 log_name = 'intellifi.services'
 
@@ -143,3 +143,34 @@ class HubSpotService(BaseService):
             after = after,
             sorts = sorts
         )['content']
+
+    def get_deal(self, deal_id, property_names = tuple()):
+        self.logger.log_text(f"Getting deal {deal_id}", severity = 'DEBUG')
+        return self.hubspot_client.get_record(
+            object_type = 'deals',
+            object_id = deal_id,
+            property_names = property_names
+        )['content']
+
+    def set_customer_company_for_deal(self, deal_id, company_id):
+        return self.hubspot_client.associate(
+            from_object_type = 'deals',
+            from_object_id = deal_id,
+            to_object_type = 'company',
+            to_object_id = company_id,
+            association_type = 'customer_deal'
+        )
+
+    def get_company_for_deal(self, deal_id):
+        self.logger.log_text('Getting company for deal', severity = 'DEBUG')
+        resp = self.hubspot_client.get_associations(
+            from_object_type = 'deals',
+            to_object_type = 'companies',
+            from_object_id = deal_id
+        )['content']
+        return HubSpotAssociationBatchReadResponse(
+            status = resp['status'],
+            results = resp['results'],
+            started_at = resp['startedAt'],
+            completed_at = resp['completedAt']
+        )
