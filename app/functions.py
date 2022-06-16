@@ -48,7 +48,7 @@ def associate_customer_deal(
     )
     company_association_result = hubspot_service.set_customer_company_for_deal(
         deal_id = hubspot_deal_sync_request.object_id,
-        company_id = associations.first()
+        company_id = associations.first().id
     )
     logger.log_text(
         f"Company association result for {hubspot_deal_sync_request.object_id}: {company_association_result}",
