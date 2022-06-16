@@ -50,8 +50,8 @@ class HubSpotAssociationResult(BaseModel):
 class HubSpotAssociationBatchReadResponse(BaseModel):
     status: str
     results: List[HubSpotAssociationResult]
-    started_at: datetime = pydantic.Field(alias = "startedAt")
-    completed_at: datetime = pydantic.Field(alias = "completedAt")
+    started_at: datetime
+    completed_at: datetime
 
     def first(self):
         return self.results[0].to[0] if len(self.results) > 0 and len(self.results[0].to) > 0 else None
