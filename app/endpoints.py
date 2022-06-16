@@ -64,7 +64,7 @@ async def get_emerge_company_crm_card(
 
     if associated_object_type == 'COMPANY':
         cloud_tasks_service.enqueue(
-            'hubspot/v1/events/worker',
+            'hubspot/v1/company-sync/worker',
             payload = hubspot_company_sync_request.dict()
         )
     return functions.get_emerge_company(
