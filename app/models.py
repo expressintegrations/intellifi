@@ -131,7 +131,8 @@ class EmergeCompanyBillingInfo(BaseModel):
             "product_types_current_month": self.product_types_current_month.to_string() if
             self.product_types_current_month else None,
             "product_types_ytd": self.product_types_ytd.to_string() if self.product_types_ytd else None,
-            "last_report_run": int(self.last_report_run.timestamp() * 1000) if self.last_report_run else None
+            "last_report_run": int(self.last_report_run.timestamp() * 1000) if self.last_report_run else None,
+            "customer_deal_stages_sync": True
         }
 
     def to_hubspot_crm_card(self):
