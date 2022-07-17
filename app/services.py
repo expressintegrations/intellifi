@@ -127,6 +127,13 @@ class HubSpotService(BaseService):
             properties = properties
         )['content']
 
+    def create_company(self, properties):
+        self.logger.log_text(f"Creating company with properties {properties}", severity = 'DEBUG')
+        return self.hubspot_client.create_record(
+            object_type = 'companies',
+            properties = properties
+        )['content']
+
     def get_company_by_emerge_company(
         self,
         emerge_company_id: int = None,
@@ -144,12 +151,54 @@ class HubSpotService(BaseService):
             sorts = sorts
         )['content']
 
+    def get_company_by_name(
+        self,
+        company_name: str = None,
+        property_names: list = tuple(),
+        after: int = None,
+        sorts: list = tuple()
+    ):
+        self.logger.log_text(f"Getting company by name {company_name}", severity = 'DEBUG')
+        return self.hubspot_client.search_records_by_property_value(
+            object_type = 'companies',
+            property_name = 'name',
+            property_value = company_name,
+            property_names = property_names,
+            after = after,
+            sorts = sorts
+        )['content']
+
     def get_deal(self, deal_id, property_names = tuple()):
         self.logger.log_text(f"Getting deal {deal_id}", severity = 'DEBUG')
         return self.hubspot_client.get_record(
             object_type = 'deals',
             object_id = deal_id,
             property_names = property_names
+        )['content']
+
+    def update_deal(self, deal_id, properties):
+        self.logger.log_text(f"Updating deal {deal_id} with properties {properties}", severity = 'DEBUG')
+        return self.hubspot_client.update_record(
+            object_type = 'deals',
+            object_id = deal_id,
+            properties = properties
+        )['content']
+
+    def get_deal_by_name(
+        self,
+        deal_name: str = None,
+        property_names: list = tuple(),
+        after: int = None,
+        sorts: list = tuple()
+    ):
+        self.logger.log_text(f"Getting deal by name {deal_name}", severity = 'DEBUG')
+        return self.hubspot_client.search_records_by_property_value(
+            object_type = 'deals',
+            property_name = 'dealname',
+            property_value = deal_name,
+            property_names = property_names,
+            after = after,
+            sorts = sorts
         )['content']
 
     def set_customer_company_for_deal(self, deal_id, company_id):
@@ -160,6 +209,13 @@ class HubSpotService(BaseService):
             to_object_type = 'company',
             to_object_id = company_id,
             association_type = 'customer_deal'
+        )
+
+    def set_company_for_deal(self, deal_id, company_id):
+        self.logger.log_text(f"Setting company {company_id} for deal {deal_id}", severity = 'DEBUG')
+        return self.hubspot_client.set_company_for_deal(
+            deal_id = deal_id,
+            company_id = company_id
         )
 
     def get_company_for_deal(self, deal_id):

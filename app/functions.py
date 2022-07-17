@@ -46,12 +46,96 @@ def associate_customer_deal(
     associations = hubspot_service.get_company_for_deal(
         deal_id = hubspot_deal_sync_request.object_id
     )
+    company_id = None
+    if len(associations.results) == 0:
+        deal = hubspot_service.get_deal(
+            deal_id = hubspot_deal_sync_request.object_id,
+            property_names = ['original_closed_won_deal']
+        )
+        deal_name = deal['properties']['dealname'].replace('Customer Deal - ', '')
+        companies = hubspot_service.get_company_by_name(
+            company_name = deal_name
+        )
+        logger.log_text(
+            f"Companies search result for {deal_name}: {companies}",
+            severity = 'DEBUG'
+        )
+        if companies['total'] == 0:
+            # create a new company
+            logger.log_text(
+                f"No Company found in HubSpot with name {deal_name}. Creating a new one...",
+                severity = 'DEBUG'
+            )
+
+            properties = {
+                "name": deal_name,
+            }
+            company = hubspot_service.create_company(properties = properties)
+            company_id = company['id']
+        elif companies['total'] == 1:
+            company = companies['results'][0]
+            logger.log_text(
+                f"Found Company in HubSpot with name {deal_name}: {company['id']}",
+                severity = 'DEBUG'
+            )
+            company_id = company['id']
+        else:
+            # This should never happen
+            raise Exception(
+                f"Multiple companies found with name {deal_name}: {companies}"
+            )
+
+        original_deal_id = deal['properties'].get('original_closed_won_deal')
+        if not original_deal_id or len(original_deal_id) == 0:
+            deals = hubspot_service.get_deal_by_name(
+                deal_name = deal_name
+            )
+            if deals['total'] == 0:
+                # This should never happen
+                raise Exception(
+                    f"No deals found with name {deal_name}: {deals}"
+                )
+            elif deals['total'] == 1:
+                original_deal = deals['results'][0]
+                logger.log_text(
+                    f"Found Deal in HubSpot with name {deal_name}: {original_deal['id']}",
+                    severity = 'DEBUG'
+                )
+                original_deal_id = original_deal['id']
+                # update the original closed won deal property
+                update_result = hubspot_service.update_deal(
+                    deal_id = hubspot_deal_sync_request.object_id,
+                    properties = {
+                        "original_closed_won_deal": original_deal_id
+                    }
+                )
+                logger.log_text(
+                    f"Update customer deal with original deal ID result: {update_result}",
+                    severity = 'DEBUG'
+                )
+            else:
+                # This should never happen
+                raise Exception(
+                    f"Multiple deals found with name {deal_name}: {deals}"
+                )
+        # associate the company to the original deal
+        company_association_result = hubspot_service.set_company_for_deal(
+            deal_id = original_deal_id,
+            company_id = company_id
+        )
+        logger.log_text(
+            f"Company association result for original deal {original_deal_id}: {company_association_result}",
+            severity = 'DEBUG'
+        )
+    else:
+        company_id = associations.first().id
     company_association_result = hubspot_service.set_customer_company_for_deal(
         deal_id = hubspot_deal_sync_request.object_id,
-        company_id = associations.first().id
+        company_id = company_id
     )
     logger.log_text(
-        f"Company association result for {hubspot_deal_sync_request.object_id}: {company_association_result}",
+        f"Company association result for customer deal {hubspot_deal_sync_request.object_id}:"
+        f" {company_association_result}",
         severity = 'DEBUG'
     )
 
