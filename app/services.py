@@ -231,3 +231,10 @@ class HubSpotService(BaseService):
             started_at = resp['startedAt'],
             completed_at = resp['completedAt']
         )
+
+    def merge_companies(self, company_to_merge: int, company_to_keep: int):
+        self.logger.log_text(f"Merging company {company_to_merge} into {company_to_keep}")
+        return self.hubspot_client.custom_request(
+            method = 'POST',
+            endpoint = f"inbounddb-objects/v1/crm-objects/COMPANY/merge/{company_to_merge}/into/{company_to_keep}"
+        )

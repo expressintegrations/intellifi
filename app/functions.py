@@ -80,10 +80,17 @@ def associate_customer_deal(
             )
             company_id = company['id']
         else:
-            # This should never happen
-            raise Exception(
-                f"Multiple companies found with name {deal_name}: {companies}"
+            company = companies['results'][0]
+            company_id = company['id']
+            logger.log_text(
+                f"Multiple companies found with name {deal_name}. Merging {companies['total']} companies: {companies}",
+                severity = 'DEBUG'
             )
+            for company_to_merge in companies['results'][1:]:
+                hubspot_service.merge_companies(
+                    company_to_merge = company_to_merge['id'],
+                    company_to_keep = company_id
+                )
 
         original_deal_id = deal['properties'].get('original_closed_won_deal')
         if not original_deal_id or len(original_deal_id) == 0:
