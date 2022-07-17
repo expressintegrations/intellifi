@@ -50,9 +50,9 @@ def associate_customer_deal(
     if len(associations.results) == 0:
         deal = hubspot_service.get_deal(
             deal_id = hubspot_deal_sync_request.object_id,
-            property_names = ['original_closed_won_deal']
+            property_names = ['original_closed_won_deal', 'dealname']
         )
-        deal_name = deal['properties']['name'].replace('Customer Deal - ', '')
+        deal_name = deal['properties']['dealname'].replace('Customer Deal - ', '')
         companies = hubspot_service.get_company_by_name(
             company_name = deal_name
         )
