@@ -50,7 +50,7 @@ async def get_emerge_company_crm_card(
             status_code = status.HTTP_401_UNAUTHORIZED,
             detail = "You are not authorized",
         )
-    emerge_company_id = int(emerge_company_id) if emerge_company_id != '' else None
+    emerge_company_id = int(emerge_company_id) if emerge_company_id and emerge_company_id != '' else None
     logger.log_text(
         f"User {user_email}({user_id}) requested Emerge CRM card for Company: "
         f"{emerge_company_id} on {associated_object_type} ({associated_object_id}) for portal {portal_id}",
