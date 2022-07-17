@@ -89,13 +89,6 @@
       <option name="presentableId" value="Default" />
       <updated>1654482756064</updated>
     </task>
-    <task id="LOCAL-00007" summary="companies endpoint">
-      <created>1655125433171</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1655125433171</updated>
-    </task>
     <task id="LOCAL-00008" summary="adding sync services and endpoints. Updating CRM card">
       <created>1655150827419</created>
       <option name="number" value="00008" />
@@ -432,7 +425,14 @@
       <option name="project" value="LOCAL" />
       <updated>1658087600563</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="fix emerge test endpoint">
+      <created>1658088162387</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1658088162387</updated>
+    </task>
+    <option name="localTasksCounter" value="57" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

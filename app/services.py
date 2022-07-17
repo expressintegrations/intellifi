@@ -234,11 +234,12 @@ class HubSpotService(BaseService):
 
     def merge_companies(self, company_to_merge: int, company_to_keep: int):
         self.logger.log_text(f"Merging company {company_to_merge} into {company_to_keep}")
+        merge_data = {
+            "primaryObjectId": company_to_keep,
+            "objectIdToMerge": company_to_merge
+        }
         return self.hubspot_client.custom_request(
             method = 'POST',
             endpoint = f"crm/v3/objects/companies/merge",
-            data = {
-                "primaryObjectId": company_to_keep,
-                "objectIdToMerge": company_to_merge
-            }
+            data = json.dumps(merge_data)
         )
