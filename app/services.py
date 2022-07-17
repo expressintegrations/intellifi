@@ -134,7 +134,7 @@ class HubSpotService(BaseService):
         after: int = None,
         sorts: list = tuple()
     ):
-        self.logger.log_text('Getting company by emerge company', severity = 'DEBUG')
+        self.logger.log_text(f"Getting company by emerge company {emerge_company_id}", severity = 'DEBUG')
         return self.hubspot_client.search_records_by_property_value(
             object_type = 'companies',
             property_name = 'emerge_company_id',
@@ -153,6 +153,7 @@ class HubSpotService(BaseService):
         )['content']
 
     def set_customer_company_for_deal(self, deal_id, company_id):
+        self.logger.log_text(f"Setting customer company {company_id} for deal {deal_id}", severity = 'DEBUG')
         return self.hubspot_client.associate(
             from_object_type = 'deals',
             from_object_id = deal_id,
@@ -162,7 +163,7 @@ class HubSpotService(BaseService):
         )
 
     def get_company_for_deal(self, deal_id):
-        self.logger.log_text('Getting company for deal', severity = 'DEBUG')
+        self.logger.log_text(f"Getting company for deal {deal_id}", severity = 'DEBUG')
         resp = self.hubspot_client.get_associations(
             from_object_type = 'deals',
             to_object_type = 'companies',
