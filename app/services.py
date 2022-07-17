@@ -236,5 +236,9 @@ class HubSpotService(BaseService):
         self.logger.log_text(f"Merging company {company_to_merge} into {company_to_keep}")
         return self.hubspot_client.custom_request(
             method = 'POST',
-            endpoint = f"inbounddb-objects/v1/crm-objects/COMPANY/merge/{company_to_merge}/into/{company_to_keep}"
+            endpoint = f"crm/v3/objects/companies/merge",
+            data = {
+                "primaryObjectId": company_to_keep,
+                "objectIdToMerge": company_to_merge
+            }
         )
