@@ -28,12 +28,47 @@ def sync_emerge_company_to_hubspot(
         year = hubspot_company_sync_request.year,
         month = hubspot_company_sync_request.month
     )
+    hubspot_company_id = hubspot_company_sync_request.object_id
+    if not hubspot_company_id:
+        companies = hubspot_service.get_company_by_emerge_company(
+            emerge_company_id = hubspot_company_sync_request.emerge_company_id
+        )
+        logger.log_text(
+            f"Companies search result for {hubspot_company_sync_request.emerge_company_id}: {companies}",
+            severity = 'DEBUG'
+        )
+        if companies['total'] == 0:
+            hubspot_company_id = get_or_create_hubspot_company_by_name(
+                company_name = emerge_company.company_name
+            )
+            logger.log_text(
+                f"No Company found in HubSpot with Emerge Company ID {hubspot_company_sync_request.emerge_company_id}. "
+                f"Created company {hubspot_company_id} in HubSpot",
+                severity = 'DEBUG'
+            )
+
+        elif companies['total'] == 1:
+            company = companies['results'][0]
+            hubspot_company_id = company['id']
+        else:
+            company = companies['results'][0]
+            hubspot_company_id = company['id']
+            logger.log_text(
+                f"Multiple companies found with Emerge Company ID {hubspot_company_sync_request.emerge_company_id}: "
+                f"{companies}",
+                severity = 'DEBUG'
+            )
+            for company_to_merge in companies['results'][1:]:
+                hubspot_service.merge_companies(
+                    company_to_merge = company_to_merge['id'],
+                    company_to_keep = hubspot_company_id
+                )
     update_result = hubspot_service.update_company(
-        company_id = hubspot_company_sync_request.object_id,
+        company_id = hubspot_company_id,
         properties = emerge_company.to_hubspot_company()
     )
     logger.log_text(
-        f"Company update result for {hubspot_company_sync_request.object_id}: {update_result}",
+        f"Company update result for {hubspot_company_id}: {update_result}",
         severity = 'DEBUG'
     )
 
@@ -46,7 +81,6 @@ def associate_customer_deal(
     associations = hubspot_service.get_company_for_deal(
         deal_id = hubspot_deal_sync_request.object_id
     )
-    company_id = None
     if len(associations.results) == 0:
         deal = hubspot_service.get_deal(
             deal_id = hubspot_deal_sync_request.object_id,
@@ -127,45 +161,12 @@ def get_emerge_company(
 @inject
 def sync_emerge_companies_to_hubspot(
     emerge_service: EmergeService = Depends(Provide[Container.emerge_service]),
-    hubspot_service: HubSpotService = Depends(Provide[Container.hubspot_service]),
     cloud_tasks_service: CloudTasksService = Depends(Provide[Container.cloud_tasks_service])
 ):
     for customer in emerge_service.get_all_customers():
-        companies = hubspot_service.get_company_by_emerge_company(emerge_company_id = customer.company_id)
-        logger.log_text(
-            f"Companies search result for {customer.company_id}: {companies}",
-            severity = 'DEBUG'
-        )
-        if companies['total'] == 0:
-            company_id = get_or_create_hubspot_company_by_name(
-                company_name = customer.company_name
-            )
-            logger.log_text(
-                f"No Company found in HubSpot with Emerge Company ID {customer.company_id}. Created company "
-                f"{company_id} in HubSpot",
-                severity = 'DEBUG'
-            )
-
-        elif companies['total'] == 1:
-            company = companies['results'][0]
-            company_id = company['id']
-        else:
-            company = companies['results'][0]
-            company_id = company['id']
-            logger.log_text(
-                f"Multiple companies found with Emerge Company ID {customer.company_id}: {companies}",
-                severity = 'DEBUG'
-            )
-            for company_to_merge in companies['results'][1:]:
-                hubspot_service.merge_companies(
-                    company_to_merge = company_to_merge['id'],
-                    company_to_keep = company_id
-                )
-
         cloud_tasks_service.enqueue(
             'hubspot/v1/company-sync/worker',
             payload = HubSpotCompanySyncRequest(
-                object_id = company_id,
                 emerge_company_id = customer.company_id
             ).dict()
         )

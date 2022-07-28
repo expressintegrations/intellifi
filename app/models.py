@@ -20,7 +20,7 @@ class HubSpotWebhookEvent(BaseModel):
 
 
 class HubSpotCompanySyncRequest(BaseModel):
-    object_id: int
+    object_id: Optional[int]
     year: int = datetime.today().year
     month: int = datetime.today().month
     emerge_company_id: Optional[int]
