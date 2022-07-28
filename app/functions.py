@@ -53,44 +53,9 @@ def associate_customer_deal(
             property_names = ['original_closed_won_deal', 'dealname']
         )
         deal_name = deal['properties']['dealname'].replace('Customer Deal - ', '')
-        companies = hubspot_service.get_company_by_name(
+        company_id = get_or_create_hubspot_company_by_name(
             company_name = deal_name
         )
-        logger.log_text(
-            f"Companies search result for {deal_name}: {companies}",
-            severity = 'DEBUG'
-        )
-        if companies['total'] == 0:
-            # create a new company
-            logger.log_text(
-                f"No Company found in HubSpot with name {deal_name}. Creating a new one...",
-                severity = 'DEBUG'
-            )
-
-            properties = {
-                "name": deal_name,
-            }
-            company = hubspot_service.create_company(properties = properties)
-            company_id = company['id']
-        elif companies['total'] == 1:
-            company = companies['results'][0]
-            logger.log_text(
-                f"Found Company in HubSpot with name {deal_name}: {company['id']}",
-                severity = 'DEBUG'
-            )
-            company_id = company['id']
-        else:
-            company = companies['results'][0]
-            company_id = company['id']
-            logger.log_text(
-                f"Multiple companies found with name {deal_name}. Merging {companies['total']} companies: {companies}",
-                severity = 'DEBUG'
-            )
-            for company_to_merge in companies['results'][1:]:
-                hubspot_service.merge_companies(
-                    company_to_merge = company_to_merge['id'],
-                    company_to_keep = company_id
-                )
 
         original_deal_id = deal['properties'].get('original_closed_won_deal')
         if not original_deal_id or len(original_deal_id) == 0:
@@ -171,26 +136,85 @@ def sync_emerge_companies_to_hubspot(
             severity = 'DEBUG'
         )
         if companies['total'] == 0:
-            # do nothing for now
+            company_id = get_or_create_hubspot_company_by_name(
+                company_name = customer.company_name
+            )
             logger.log_text(
-                f"No Company found in HubSpot with Emerge Company ID {customer.company_id}",
+                f"No Company found in HubSpot with Emerge Company ID {customer.company_id}. Created company "
+                f"{company_id} in HubSpot",
                 severity = 'DEBUG'
             )
+
         elif companies['total'] == 1:
             company = companies['results'][0]
-            # update
+            company_id = company['id']
+        else:
+            company = companies['results'][0]
+            company_id = company['id']
             logger.log_text(
-                f"Updating company {company['id']}",
+                f"Multiple companies found with Emerge Company ID {customer.company_id}: {companies}",
                 severity = 'DEBUG'
             )
-            sync_emerge_company_to_hubspot(
-                hubspot_company_sync_request = HubSpotCompanySyncRequest(
-                    object_id = company['id'],
-                    emerge_company_id = customer.company_id
+            for company_to_merge in companies['results'][1:]:
+                hubspot_service.merge_companies(
+                    company_to_merge = company_to_merge['id'],
+                    company_to_keep = company_id
                 )
+
+        # update
+        logger.log_text(
+            f"Updating company {company_id}",
+            severity = 'DEBUG'
+        )
+        sync_emerge_company_to_hubspot(
+            hubspot_company_sync_request = HubSpotCompanySyncRequest(
+                object_id = company_id,
+                emerge_company_id = customer.company_id
             )
-        else:
-            # This should never happen
-            raise Exception(
-                f"Multiple companies found with Emerge Company ID {customer.company_id}: {companies}"
+        )
+
+
+@inject
+def get_or_create_hubspot_company_by_name(
+    company_name: str,
+    hubspot_service: HubSpotService = Depends(Provide[Container.hubspot_service])
+):
+    companies = hubspot_service.get_company_by_name(
+        company_name = company_name
+    )
+    logger.log_text(
+        f"Companies search result for {company_name}: {companies}",
+        severity = 'DEBUG'
+    )
+    if companies['total'] == 0:
+        # create a new company
+        logger.log_text(
+            f"No Company found in HubSpot with name {company_name}. Creating a new one...",
+            severity = 'DEBUG'
+        )
+
+        properties = {
+            "name": company_name,
+        }
+        company = hubspot_service.create_company(properties = properties)
+        return company['id']
+    elif companies['total'] == 1:
+        company = companies['results'][0]
+        logger.log_text(
+            f"Found Company in HubSpot with name {company_name}: {company['id']}",
+            severity = 'DEBUG'
+        )
+        return company['id']
+    else:
+        company = companies['results'][0]
+        company_id = company['id']
+        logger.log_text(
+            f"Multiple companies found with name {company_name}. Merging {companies['total']} companies: {companies}",
+            severity = 'DEBUG'
+        )
+        for company_to_merge in companies['results'][1:]:
+            hubspot_service.merge_companies(
+                company_to_merge = company_to_merge['id'],
+                company_to_keep = company_id
             )
+        return company_id

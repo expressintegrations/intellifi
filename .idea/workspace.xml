@@ -4,7 +4,9 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="fix emerge test endpoint" />
+    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="fix company merge function">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -88,13 +90,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1654482756064</updated>
-    </task>
-    <task id="LOCAL-00008" summary="adding sync services and endpoints. Updating CRM card">
-      <created>1655150827419</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1655150827419</updated>
     </task>
     <task id="LOCAL-00009" summary="adding sync services and endpoints. Updating CRM card">
       <created>1655151203727</created>
@@ -432,7 +427,14 @@
       <option name="project" value="LOCAL" />
       <updated>1658088162387</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL-00057" summary="fix company merge function">
+      <created>1658088469927</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1658088469927</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -467,6 +469,7 @@
     <MESSAGE value="adding logging" />
     <MESSAGE value="fix deals without companies" />
     <MESSAGE value="fix emerge test endpoint" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix emerge test endpoint" />
+    <MESSAGE value="fix company merge function" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix company merge function" />
   </component>
 </project>
