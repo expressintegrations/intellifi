@@ -4,7 +4,7 @@ from google.cloud import logging
 
 from .containers import Container
 from .models import HubSpotCompanySyncRequest, HubSpotDealSyncRequest
-from .services import EmergeService, HubSpotService
+from .services import CloudTasksService, EmergeService, HubSpotService
 
 log_name = 'intellifi.functions'
 logging_client = logging.Client()
@@ -127,7 +127,8 @@ def get_emerge_company(
 @inject
 def sync_emerge_companies_to_hubspot(
     emerge_service: EmergeService = Depends(Provide[Container.emerge_service]),
-    hubspot_service: HubSpotService = Depends(Provide[Container.hubspot_service])
+    hubspot_service: HubSpotService = Depends(Provide[Container.hubspot_service]),
+    cloud_tasks_service: CloudTasksService = Depends(Provide[Container.cloud_tasks_service])
 ):
     for customer in emerge_service.get_all_customers():
         companies = hubspot_service.get_company_by_emerge_company(emerge_company_id = customer.company_id)
@@ -161,16 +162,12 @@ def sync_emerge_companies_to_hubspot(
                     company_to_keep = company_id
                 )
 
-        # update
-        logger.log_text(
-            f"Updating company {company_id}",
-            severity = 'DEBUG'
-        )
-        sync_emerge_company_to_hubspot(
-            hubspot_company_sync_request = HubSpotCompanySyncRequest(
+        cloud_tasks_service.enqueue(
+            'hubspot/v1/company-sync/worker',
+            payload = HubSpotCompanySyncRequest(
                 object_id = company_id,
                 emerge_company_id = customer.company_id
-            )
+            ).dict()
         )
 
 
