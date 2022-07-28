@@ -62,7 +62,7 @@ class EmergeSales(BaseModel):
     sales: Optional[float] = pydantic.Field(alias = "Sales")
 
     def to_string(self):
-        return f"Volume: {self.volume}, Sales: {'${:,.2f}'.format(self.sales)}"
+        return f"Volume: {self.volume}{' ⭐' if self.volume > 499 else ''}, Sales: {'${:,.2f}'.format(self.sales)}"
 
 
 class EmergeProductTypes(BaseModel):
@@ -112,7 +112,25 @@ class EmergeCompanyBillingInfo(BaseModel):
             elif change_in_sales > 20:
                 change_in_sales = f"{'{:,.0f}'.format(change_in_sales)}% ▲"
             else:
-                f"{'{:,.0f}'.format(change_in_sales)}%"
+                change_in_sales = f"{'{:,.0f}'.format(change_in_sales)}%"
+
+        change_in_volume = "N/A"
+        if (
+            self.sales_current_month
+            and self.sales_last_month
+            and self.sales_last_month.volume > 0
+        ):
+            change_in_volume = (self.sales_current_month.volume - self.sales_last_month.volume) / \
+                              self.sales_last_month.volume * 100
+            if change_in_volume < -20:
+                change_in_volume = f"{'{:,.0f}'.format(change_in_volume)}% 🔻"
+            elif change_in_volume > 20:
+                change_in_volume = f"{'{:,.0f}'.format(change_in_volume)}% ▲"
+            else:
+                change_in_volume = f"{'{:,.0f}'.format(change_in_volume)}%"
+
+            if self.sales_last_month.volume > 499 or self.sales_current_month.volume > 499:
+                change_in_volume = f"{change_in_volume} ⭐"
         return {
             "name": self.company_name if self.company_name else None,
             "date_opened": int(self.date_opened.timestamp() * 1000) if self.date_opened else None,
@@ -126,6 +144,7 @@ class EmergeCompanyBillingInfo(BaseModel):
             "sales_ytd": self.sales_ytd.sales if self.sales_ytd else None,
             "volume_ytd": self.sales_ytd.volume if self.sales_ytd else None,
             "change_in_sales": change_in_sales,
+            "change_in_volume": change_in_volume,
             "product_types_last_month": self.product_types_last_month.to_string() if self.product_types_last_month
             else None,
             "product_types_current_month": self.product_types_current_month.to_string() if
@@ -151,7 +170,25 @@ class EmergeCompanyBillingInfo(BaseModel):
                 elif change_in_sales > 20:
                     change_in_sales = f"{'{:,.0f}'.format(change_in_sales)}% ▲"
                 else:
-                    f"{'{:,.0f}'.format(change_in_sales)}%"
+                    change_in_sales = f"{'{:,.0f}'.format(change_in_sales)}%"
+
+            change_in_volume = "N/A"
+            if (
+                self.sales_current_month
+                and self.sales_last_month
+                and self.sales_last_month.volume > 0
+            ):
+                change_in_volume = (self.sales_current_month.volume - self.sales_last_month.volume) / \
+                                   self.sales_last_month.volume * 100
+                if change_in_volume < -20:
+                    change_in_volume = f"{'{:,.0f}'.format(change_in_volume)}% 🔻"
+                elif change_in_volume > 20:
+                    change_in_volume = f"{'{:,.0f}'.format(change_in_volume)}% ▲"
+                else:
+                    change_in_volume = f"{'{:,.0f}'.format(change_in_volume)}%"
+
+                if self.sales_last_month.volume > 499 or self.sales_current_month.volume > 499:
+                    change_in_volume = f"{change_in_volume} ⭐"
             data = {
                 "objectId": self.company_id,
                 "title": self.company_name,
@@ -165,6 +202,7 @@ class EmergeCompanyBillingInfo(BaseModel):
                 "sales_ytd": self.sales_ytd.to_string() if self.sales_ytd else None,
                 "volume_ytd": self.sales_ytd.volume if self.sales_ytd else None,
                 "change_in_sales": change_in_sales,
+                "change_in_volume": change_in_volume,
                 "product_types_last_month": self.product_types_last_month.to_string() if self.product_types_last_month
                 else None,
                 "product_types_current_month": self.product_types_current_month.to_string() if
