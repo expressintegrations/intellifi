@@ -4,7 +4,7 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="fix company sync">
+    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="add change in volume">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models.py" afterDir="false" />
     </list>
@@ -91,13 +91,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1654482756064</updated>
-    </task>
-    <task id="LOCAL-00013" summary="trying to fix auth">
-      <created>1655153801988</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1655153801988</updated>
     </task>
     <task id="LOCAL-00014" summary="trying to fix auth">
       <created>1655154469553</created>
@@ -435,7 +428,14 @@
       <option name="project" value="LOCAL" />
       <updated>1658974210001</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="add change in volume">
+      <created>1659025878511</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1659025878511</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -472,6 +472,7 @@
     <MESSAGE value="fix emerge test endpoint" />
     <MESSAGE value="fix company merge function" />
     <MESSAGE value="fix company sync" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix company sync" />
+    <MESSAGE value="add change in volume" />
+    <option name="LAST_COMMIT_MESSAGE" value="add change in volume" />
   </component>
 </project>

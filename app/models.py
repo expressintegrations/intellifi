@@ -115,6 +115,7 @@ class EmergeCompanyBillingInfo(BaseModel):
                 change_in_sales = f"{'{:,.0f}'.format(change_in_sales)}%"
 
         change_in_volume = "N/A"
+        company_name = self.company_name.strip(' ⭐') if self.company_name else None
         if (
             self.sales_current_month
             and self.sales_last_month
@@ -130,9 +131,9 @@ class EmergeCompanyBillingInfo(BaseModel):
                 change_in_volume = f"{'{:,.0f}'.format(change_in_volume)}%"
 
             if self.sales_last_month.volume > 499 or self.sales_current_month.volume > 499:
-                change_in_volume = f"{change_in_volume} ⭐"
+                company_name = f"{company_name} ⭐"
         return {
-            "name": self.company_name if self.company_name else None,
+            "name": company_name,
             "date_opened": int(self.date_opened.timestamp() * 1000) if self.date_opened else None,
             "of_locations": int(self.number_of_locations) if self.number_of_locations else None,
             "company_status": self.account_status.upper() if self.account_status else None,
@@ -173,6 +174,7 @@ class EmergeCompanyBillingInfo(BaseModel):
                     change_in_sales = f"{'{:,.0f}'.format(change_in_sales)}%"
 
             change_in_volume = "N/A"
+            company_name = self.company_name.strip(' ⭐') if self.company_name else None
             if (
                 self.sales_current_month
                 and self.sales_last_month
@@ -188,10 +190,10 @@ class EmergeCompanyBillingInfo(BaseModel):
                     change_in_volume = f"{'{:,.0f}'.format(change_in_volume)}%"
 
                 if self.sales_last_month.volume > 499 or self.sales_current_month.volume > 499:
-                    change_in_volume = f"{change_in_volume} ⭐"
+                    company_name = f"{company_name} ⭐"
             data = {
                 "objectId": self.company_id,
-                "title": self.company_name,
+                "title": company_name,
                 "link": f"https://emerge.intelifi.com/companies/{self.company_id}",
                 "date_opened": int(self.date_opened.timestamp() * 1000) if self.date_opened else None,
                 "number_of_locations": int(self.number_of_locations) if self.number_of_locations else None,
