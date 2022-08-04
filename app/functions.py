@@ -163,7 +163,7 @@ def sync_emerge_companies_to_hubspot(
     emerge_service: EmergeService = Depends(Provide[Container.emerge_service]),
     cloud_tasks_service: CloudTasksService = Depends(Provide[Container.cloud_tasks_service])
 ):
-    for customer in emerge_service.get_all_customers():
+    for index, customer in enumerate(emerge_service.get_all_customers()):
         try:
             cloud_tasks_service.enqueue(
                 'hubspot/v1/company-sync/worker',
@@ -173,7 +173,9 @@ def sync_emerge_companies_to_hubspot(
             )
         except Exception as e:
             logger.log_text(
-                f"Job failed at {customer.company_id}: {str(e)}"
+                f"Job failed at customer {index + 1}: {customer.company_name} ({customer.company_id}) with the failure:"
+                f" {str(e)}",
+                severity = 'DEBUG'
             )
 
 

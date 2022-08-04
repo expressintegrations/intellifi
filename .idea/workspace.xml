@@ -4,10 +4,7 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="move star to company name">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models.py" afterDir="false" />
-    </list>
+    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="add debugging to fix job failures" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -91,20 +88,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1654482756064</updated>
-    </task>
-    <task id="LOCAL-00016" summary="trying to fix auth">
-      <created>1655155636260</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1655155636260</updated>
-    </task>
-    <task id="LOCAL-00017" summary="trying to fix auth">
-      <created>1655171173763</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1655171173763</updated>
     </task>
     <task id="LOCAL-00018" summary="trying to fix auth">
       <created>1655172002526</created>
@@ -435,7 +418,21 @@
       <option name="project" value="LOCAL" />
       <updated>1659289078159</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="move star to company name">
+      <created>1659578272691</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1659578272691</updated>
+    </task>
+    <task id="LOCAL-00066" summary="add debugging to fix job failures">
+      <created>1659579100851</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1659579100851</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -474,6 +471,7 @@
     <MESSAGE value="fix company sync" />
     <MESSAGE value="add change in volume" />
     <MESSAGE value="move star to company name" />
-    <option name="LAST_COMMIT_MESSAGE" value="move star to company name" />
+    <MESSAGE value="add debugging to fix job failures" />
+    <option name="LAST_COMMIT_MESSAGE" value="add debugging to fix job failures" />
   </component>
 </project>
