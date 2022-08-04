@@ -164,12 +164,17 @@ def sync_emerge_companies_to_hubspot(
     cloud_tasks_service: CloudTasksService = Depends(Provide[Container.cloud_tasks_service])
 ):
     for customer in emerge_service.get_all_customers():
-        cloud_tasks_service.enqueue(
-            'hubspot/v1/company-sync/worker',
-            payload = HubSpotCompanySyncRequest(
-                emerge_company_id = customer.company_id
-            ).dict()
-        )
+        try:
+            cloud_tasks_service.enqueue(
+                'hubspot/v1/company-sync/worker',
+                payload = HubSpotCompanySyncRequest(
+                    emerge_company_id = customer.company_id
+                ).dict()
+            )
+        except Exception as e:
+            logger.log_text(
+                f"Job failed at {customer.company_id}: {str(e)}"
+            )
 
 
 @inject
