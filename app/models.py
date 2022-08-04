@@ -130,7 +130,7 @@ class EmergeCompanyBillingInfo(BaseModel):
             else:
                 change_in_volume = f"{'{:,.0f}'.format(change_in_volume)}%"
 
-            if self.sales_last_month.volume > 499 or self.sales_current_month.volume > 499:
+            if self.sales_current_month.volume > 499:
                 company_name = f"{company_name} ⭐"
         return {
             "name": company_name,
@@ -189,7 +189,7 @@ class EmergeCompanyBillingInfo(BaseModel):
                 else:
                     change_in_volume = f"{'{:,.0f}'.format(change_in_volume)}%"
 
-                if self.sales_last_month.volume > 499 or self.sales_current_month.volume > 499:
+                if self.sales_current_month.volume > 499:
                     company_name = f"{company_name} ⭐"
             data = {
                 "objectId": self.company_id,
