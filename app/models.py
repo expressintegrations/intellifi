@@ -130,6 +130,8 @@ class EmergeCompanyBillingInfo(BaseModel):
             else:
                 change_in_volume = f"{'{:,.0f}'.format(change_in_volume)}%"
 
+            change_in_volume = f"{self.last_report_run} | {change_in_volume}"
+
             if self.sales_current_month.volume > 499:
                 company_name = f"{company_name} ⭐"
         return {
@@ -188,6 +190,8 @@ class EmergeCompanyBillingInfo(BaseModel):
                     change_in_volume = f"{'{:,.0f}'.format(change_in_volume)}% ▲"
                 else:
                     change_in_volume = f"{'{:,.0f}'.format(change_in_volume)}%"
+
+                change_in_volume = f"{self.last_report_run} | {change_in_volume}"
 
                 if self.sales_current_month.volume > 499:
                     company_name = f"{company_name} ⭐"

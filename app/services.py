@@ -65,7 +65,7 @@ class CloudTasksService(BaseService):
         response = self.cloud_tasks_client.create_task(request = {'parent': parent, 'task': task})
 
         self.logger.log_text(
-            f"Created task {response.name} on {self.base_url}{relative_handler_uri}",
+            f"Created task {response.name} on {self.base_url}/{relative_handler_uri}",
             severity = 'DEBUG'
         )
 
