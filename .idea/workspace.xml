@@ -4,10 +4,8 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="add debugging to fix job failures">
+    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="add date to change in volume field">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,13 +90,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1654482756064</updated>
-    </task>
-    <task id="LOCAL-00019" summary="trying to fix auth">
-      <created>1655172689898</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1655172689898</updated>
     </task>
     <task id="LOCAL-00020" summary="trying to fix auth">
       <created>1655173203830</created>
@@ -436,7 +427,14 @@
       <option name="project" value="LOCAL" />
       <updated>1659579452098</updated>
     </task>
-    <option name="localTasksCounter" value="68" />
+    <task id="LOCAL-00068" summary="add date to change in volume field">
+      <created>1660098355204</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1660098355204</updated>
+    </task>
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -476,6 +474,7 @@
     <MESSAGE value="add change in volume" />
     <MESSAGE value="move star to company name" />
     <MESSAGE value="add debugging to fix job failures" />
-    <option name="LAST_COMMIT_MESSAGE" value="add debugging to fix job failures" />
+    <MESSAGE value="add date to change in volume field" />
+    <option name="LAST_COMMIT_MESSAGE" value="add date to change in volume field" />
   </component>
 </project>
