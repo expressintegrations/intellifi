@@ -45,7 +45,7 @@ def create_app(env: str = 'prod') -> FastAPI:
     )
 
     # Wire up the endpoints for dependency injection
-    container.wire(modules = [endpoints, functions])
+    container.wire(modules=[endpoints, functions])
 
     # Initialize the API with the endpoints
     app = FastAPI()
