@@ -31,7 +31,7 @@ class HubSpotDealSyncRequest(BaseModel):
     object_id: int
 
 
-class PricingTier(Enum):
+class PricingTier(str, Enum):
     TIER_1 = "A"
     TIER_2 = "B"
     TIER_3 = "C"

@@ -4,12 +4,8 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="add endpoint to receive files">
+    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="add line items sync">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/endpoints.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/endpoints.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/functions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,13 +92,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1654482756064</updated>
-    </task>
-    <task id="LOCAL-00022" summary="trying to fix auth">
-      <created>1655174849815</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1655174849815</updated>
     </task>
     <task id="LOCAL-00023" summary="trying to fix auth">
       <created>1655178358328</created>
@@ -440,7 +429,14 @@
       <option name="project" value="LOCAL" />
       <updated>1662684697479</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="add line items sync">
+      <created>1662696420377</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1662696420377</updated>
+    </task>
+    <option name="localTasksCounter" value="72" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -483,6 +479,7 @@
     <MESSAGE value="add date to change in volume field" />
     <MESSAGE value="reformat change in volume field" />
     <MESSAGE value="add endpoint to receive files" />
-    <option name="LAST_COMMIT_MESSAGE" value="add endpoint to receive files" />
+    <MESSAGE value="add line items sync" />
+    <option name="LAST_COMMIT_MESSAGE" value="add line items sync" />
   </component>
 </project>
