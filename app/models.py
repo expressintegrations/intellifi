@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 from typing import List, Optional
 
 import pydantic
@@ -28,6 +29,17 @@ class HubSpotCompanySyncRequest(BaseModel):
 
 class HubSpotDealSyncRequest(BaseModel):
     object_id: int
+
+
+class PricingTier(Enum):
+    TIER_1 = "A"
+    TIER_2 = "B"
+    TIER_3 = "C"
+
+
+class HubSpotLineItemSyncRequest(BaseModel):
+    object_id: int
+    pricing_tier: Optional[PricingTier]
 
 
 class HubSpotAssociation(BaseModel):

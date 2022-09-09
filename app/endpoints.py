@@ -5,13 +5,13 @@ import traceback
 from typing import List
 
 from dependency_injector.wiring import inject, Provide
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, status, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.responses import HTMLResponse
 from google.cloud import logging
 
 from . import functions
 from .containers import Container
-from .models import HubSpotCompanySyncRequest, HubSpotDealSyncRequest, HubSpotWebhookEvent
+from .models import HubSpotCompanySyncRequest, HubSpotDealSyncRequest, HubSpotWebhookEvent, HubSpotLineItemSyncRequest
 from .services import CloudTasksService
 
 log_name = 'intellifi.endpoints'
@@ -19,12 +19,6 @@ logging_client = logging.Client()
 logger = logging_client.logger(log_name)
 
 router = APIRouter()
-
-
-@router.post('/intellifi/v1/quotes/business_license')
-@inject
-async def sync_business_license(file: UploadFile):
-    print(file.filename)
 
 
 @router.get('/intellifi/v1/companies')
@@ -117,6 +111,15 @@ async def process_hubspot_events(
                         object_id=event.objectId
                     ).dict()
                 )
+
+            if event.propertyName == 'pricing_tier' and event.subscriptionType == 'deal.propertyChange':
+                cloud_tasks_service.enqueue(
+                    'hubspot/v1/line-item-sync/worker',
+                    payload=HubSpotLineItemSyncRequest(
+                        object_id=event.objectId,
+                        pricing_tier=event.propertyValue
+                    ).dict()
+                )
     except Exception:
         logger.log_text(
             traceback.format_exc(),
@@ -125,6 +128,22 @@ async def process_hubspot_events(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to enqueue the hubspot event",
+        )
+    return HTMLResponse(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.post('/hubspot/v1/line-item-sync/worker')
+def hubspot_line_item_sync_worker(event: HubSpotLineItemSyncRequest):
+    try:
+        functions.sync_line_items(sync_request=event)
+    except Exception:
+        logger.log_text(
+            traceback.format_exc(),
+            severity='DEBUG'
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to process the hubspot deal pricing tier event",
         )
     return HTMLResponse(status_code=status.HTTP_204_NO_CONTENT)
 

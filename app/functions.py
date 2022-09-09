@@ -3,12 +3,14 @@ from fastapi import Depends
 from google.cloud import logging
 
 from .containers import Container
-from .models import HubSpotCompanySyncRequest, HubSpotDealSyncRequest
+from .models import HubSpotCompanySyncRequest, HubSpotDealSyncRequest, HubSpotLineItemSyncRequest, PricingTier
 from .services import CloudTasksService, EmergeService, HubSpotService
 
 log_name = 'intellifi.functions'
 logging_client = logging.Client()
 logger = logging_client.logger(log_name)
+
+PRODUCT_PROPERTIES = ['name', 'hs_cost_of_goods_sold', 'tier_2', 'tier_3', 'hs_product_id']
 
 
 @inject
@@ -223,3 +225,47 @@ def get_or_create_hubspot_company_by_name(
                 company_to_keep=company_id
             )
         return company_id
+
+
+@inject
+def sync_line_items(
+    sync_request: HubSpotLineItemSyncRequest,
+    hubspot_service: HubSpotService = Depends(Provide[Container.hubspot_service])
+):
+    deal = hubspot_service.get_deal(
+        deal_id=sync_request.object_id,
+        associations=['line_item']
+    )
+    if not sync_request.pricing_tier:
+        if deal.get('associations'):
+            for association in deal['associations']['line_items']['results']:
+                hubspot_service.delete_line_item(line_item_id=association['id'])
+    products = hubspot_service.get_all_products(property_names=PRODUCT_PROPERTIES)
+    pricing_property = 'hs_cost_of_goods_sold'
+    if sync_request.pricing_tier == PricingTier.TIER_2:
+        pricing_property = 'tier_2'
+    elif sync_request.pricing_tier == PricingTier.TIER_3:
+        pricing_property = 'tier_3'
+
+    line_items = []
+    if deal.get('associations'):
+        for association in deal['associations']['line_items']['results']:
+            line_item = hubspot_service.get_line_item(line_item_id=association['id'])
+            amount = products[line_item['properties']['hs_product_id']][pricing_property]
+            line_item['properties']['amount'] = amount
+            line_items.append(line_item)
+
+        hubspot_service.update_line_items(records=line_items)
+    else:
+        for product_id, product in products.items():
+            if product.get(pricing_property):
+                properties = {
+                    'name': product['name'],
+                    'hs_product_id': product_id,
+                    'quantity': 1,
+                    'amount': product[pricing_property]
+                }
+
+                line_item = hubspot_service.create_line_item(properties=properties)
+                hubspot_service.set_deal_for_line_item(line_item_id=line_item['id'], deal_id=sync_request.object_id)
+

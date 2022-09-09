@@ -168,12 +168,13 @@ class HubSpotService(BaseService):
             sorts=sorts
         )['content']
 
-    def get_deal(self, deal_id, property_names=tuple()):
+    def get_deal(self, deal_id, property_names=tuple(), associations=None):
         self.logger.log_text(f"Getting deal {deal_id}", severity='DEBUG')
         return self.hubspot_client.get_record(
             object_type='deals',
             object_id=deal_id,
-            property_names=property_names
+            property_names=property_names,
+            associations=associations
         )['content']
 
     def update_deal(self, deal_id, properties):
@@ -243,3 +244,72 @@ class HubSpotService(BaseService):
             endpoint=f"crm/v3/objects/companies/merge",
             data=json.dumps(merge_data)
         )
+
+    def get_line_items_for_deal(self, deal_id):
+        self.logger.log_text(f"Getting line items for deal {deal_id}", severity='DEBUG')
+        resp = self.hubspot_client.get_associations(
+            from_object_type='deals',
+            to_object_type='line_items',
+            from_object_id=deal_id
+        )['content']
+        return HubSpotAssociationBatchReadResponse(
+            status=resp['status'],
+            results=resp['results'],
+            started_at=resp['startedAt'],
+            completed_at=resp['completedAt']
+        )
+
+    def get_line_item(self, line_item_id, properties=None):
+        self.logger.log_text(f"Getting line item {line_item_id} with properties {properties}", severity='DEBUG')
+        return self.hubspot_client.get_record(
+            object_type='line_item',
+            object_id=line_item_id,
+            property_names=properties
+        )['content']
+
+    def create_line_item(self, properties):
+        self.logger.log_text(f"Creating line item with properties {properties}", severity='DEBUG')
+        return self.hubspot_client.create_record(
+            object_type='line_item',
+            properties=properties
+        )['content']
+
+    def set_deal_for_line_item(self, line_item_id, deal_id):
+        self.logger.log_text(f"Setting deal {deal_id} for line item {line_item_id}", severity='DEBUG')
+        return self.hubspot_client.set_deal_for_line_item(
+            deal_id=deal_id,
+            line_item_id=line_item_id
+        )
+
+    def update_line_items(self, records):
+        self.logger.log_text(
+            f"Updating {len(records)} line items",
+            severity='DEBUG'
+        )
+        return self.hubspot_client.update_records_batch(
+            object_type='line_item',
+            records=records
+        )['content']
+
+    def delete_line_item(self, line_item_id):
+        self.logger.log_text(f"Deleting line item {line_item_id}", severity='DEBUG')
+        return self.hubspot_client.delete_record(
+            object_type='line_item',
+            object_id=line_item_id
+        )['content']
+
+    def get_products(self, property_names, after=None):
+        return self.hubspot_client.get_records(
+            object_type='product',
+            property_names=property_names,
+            after=after
+        )['content']
+
+    def get_all_products(self, property_names):
+        self.logger.log_text(f"Getting products", severity='DEBUG')
+        products = []
+        result = self.get_products(property_names=property_names)
+        while len(result['results']) > 0:
+            products += result['results']
+            result = self.get_products(property_names=property_names, after=result['paging']['next']['after'])
+        return {p['id']: p['properties'] for p in products}
