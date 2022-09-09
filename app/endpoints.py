@@ -137,6 +137,7 @@ def hubspot_line_item_sync_worker(event: HubSpotLineItemSyncRequest):
     try:
         functions.sync_line_items(sync_request=event)
     except Exception:
+        print(traceback.format_exc())
         logger.log_text(
             traceback.format_exc(),
             severity='DEBUG'

@@ -309,7 +309,8 @@ class HubSpotService(BaseService):
         self.logger.log_text(f"Getting products", severity='DEBUG')
         products = []
         result = self.get_products(property_names=property_names)
-        while len(result['results']) > 0:
-            products += result['results']
+        products += result['results']
+        while result.get('paging'):
             result = self.get_products(property_names=property_names, after=result['paging']['next']['after'])
+            products += result['results']
         return {p['id']: p['properties'] for p in products}
