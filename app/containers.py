@@ -13,6 +13,11 @@ class Container(containers.DeclarativeContainer):
         firestore.Client
     )
 
+    firestore_service = providers.Factory(
+        services.FirestoreService,
+        firestore_client=firestore_client
+    )
+
     cloud_tasks_client = providers.Factory(
         tasks_v2.CloudTasksClient
     )

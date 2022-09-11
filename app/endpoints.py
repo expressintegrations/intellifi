@@ -12,7 +12,7 @@ from google.cloud import logging
 from . import functions
 from .containers import Container
 from .models import HubSpotCompanySyncRequest, HubSpotDealSyncRequest, HubSpotWebhookEvent, HubSpotLineItemSyncRequest
-from .services import CloudTasksService
+from .services import CloudTasksService, FirestoreService
 
 log_name = 'intellifi.endpoints'
 logging_client = logging.Client()
@@ -78,6 +78,7 @@ async def process_hubspot_events(
     request: Request,
     cloud_tasks_service: CloudTasksService = Depends(Provide[Container.cloud_tasks_service]),
     webhook_secret_key: str = Depends(Provide[Container.config.hubspot.client_secret]),
+    firestore_service: FirestoreService = Depends(Provide[Container.firestore_service]),
     events: List[HubSpotWebhookEvent] = tuple()
 ):
     expected_sig = request.headers['x-hubspot-signature-v3']
@@ -113,6 +114,9 @@ async def process_hubspot_events(
                 )
 
             if event.propertyName == 'pricing_tier' and event.subscriptionType == 'deal.propertyChange':
+                if not firestore_service.line_item_sync_enabled():
+                    print(f"Line Item Sync is disabled. Skip webhook: {event}")
+                    return
                 cloud_tasks_service.enqueue(
                     'hubspot/v1/line-item-sync/worker',
                     payload=HubSpotLineItemSyncRequest(

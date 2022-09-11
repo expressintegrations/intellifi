@@ -16,6 +16,20 @@ class BaseService:
         self.logger = logging_client.logger(log_name)
 
 
+class FirestoreService(BaseService):
+    def __init__(
+        self,
+        firestore_client: firestore.Client,
+    ) -> None:
+        self.firestore_client = firestore_client
+        super().__init__()
+
+    def line_item_sync_enabled(self):
+        doc = self.firestore_client.collection('hubspot_sync').document('settings')
+        settings = doc.get().to_dict()
+        return settings['line_item_sync_enabled']
+
+
 class CloudTasksService(BaseService):
 
     def __init__(
