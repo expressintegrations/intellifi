@@ -121,7 +121,7 @@ async def process_hubspot_events(
                     'hubspot/v1/line-item-sync/worker',
                     payload=HubSpotLineItemSyncRequest(
                         object_id=event.objectId,
-                        pricing_tier=event.propertyValue
+                        pricing_tier=event.propertyValue if event.propertyValue != '' else None
                     ).dict()
                 )
     except Exception:

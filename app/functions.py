@@ -10,7 +10,7 @@ log_name = 'intellifi.functions'
 logging_client = logging.Client()
 logger = logging_client.logger(log_name)
 
-PRODUCT_PROPERTIES = ['name', 'price', 'tier_2', 'tier_3', 'hs_product_id']
+PRODUCT_PROPERTIES = ['name', 'price', 'tier_2', 'tier_3', 'hs_product_id', 'hs_sku']
 
 
 @inject
@@ -253,7 +253,11 @@ def sync_line_items(
         for association in deal['associations']['line items']['results']:
             line_item = hubspot_service.get_line_item(line_item_id=association['id'])
             product_id = line_item['properties']['hs_product_id']
-            if product_id in products.keys() and products[product_id].get(pricing_property):
+            if (
+                product_id in products.keys()
+                and products[product_id].get(pricing_property)
+                and products[product_id].get('hs_sku')
+            ):
                 # update existing line items with new prices
                 known_product_ids.append(product_id)
                 amount = products[line_item['properties']['hs_product_id']][pricing_property]
@@ -268,7 +272,7 @@ def sync_line_items(
         # create missing line items
         for product_id, product in products.items():
             if product_id not in known_product_ids:
-                if product.get(pricing_property):
+                if product.get(pricing_property) and product.get('hs_sku'):
                     properties = {
                         'name': product['name'],
                         'hs_product_id': product_id,
@@ -280,7 +284,7 @@ def sync_line_items(
                     hubspot_service.set_deal_for_line_item(line_item_id=line_item['id'], deal_id=sync_request.object_id)
     else:
         for product_id, product in products.items():
-            if product.get(pricing_property):
+            if product.get(pricing_property) and product.get('hs_sku'):
                 properties = {
                     'name': product['name'],
                     'hs_product_id': product_id,
