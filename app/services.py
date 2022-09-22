@@ -281,6 +281,18 @@ class HubSpotService(BaseService):
             property_names=properties
         )['content']
 
+    def get_line_items(self, line_item_ids, properties=None):
+        self.logger.log_text(f"Getting line items {line_item_ids} with properties {properties}", severity='DEBUG')
+        data = {
+            'properties': properties,
+            'inputs': [{'id': line_item_id} for line_item_id in line_item_ids]
+        }
+        return self.hubspot_client.custom_request(
+            method='POST',
+            endpoint=f"crm/v3/objects/line_items/batch/read",
+            data=json.dumps(data)
+        )['content']['results']
+
     def create_line_item(self, properties):
         self.logger.log_text(f"Creating line item with properties {properties}", severity='DEBUG')
         return self.hubspot_client.create_record(
@@ -288,12 +300,49 @@ class HubSpotService(BaseService):
             properties=properties
         )['content']
 
+    def create_line_items(self, line_items):
+        self.logger.log_text(f"Creating line items {line_items}", severity='DEBUG')
+        data = {
+            'inputs': [{'properties': line_item} for line_item in line_items]
+        }
+        return self.hubspot_client.custom_request(
+            method='POST',
+            endpoint=f"crm/v3/objects/line_items/batch/create",
+            data=json.dumps(data)
+        )['content']['results']
+
     def set_deal_for_line_item(self, line_item_id, deal_id):
         self.logger.log_text(f"Setting deal {deal_id} for line item {line_item_id}", severity='DEBUG')
         return self.hubspot_client.set_deal_for_line_item(
             deal_id=deal_id,
             line_item_id=line_item_id
         )
+
+    def set_deal_for_line_items(self, line_items, deal_id):
+        self.logger.log_text(f"Setting deal {deal_id} for line items {line_items}", severity='DEBUG')
+        data = {
+            'inputs': [
+                {
+                    'from': {
+                        'id': line_item['id']
+                    },
+                    'to': {
+                        'id': deal_id
+                    },
+                    'types': [
+                        {
+                            'associationCategory': 'HUBSPOT_DEFINED',
+                            'associationTypeId': 20
+                        }
+                    ]
+                } for line_item in line_items
+            ]
+        }
+        return self.hubspot_client.custom_request(
+            method='POST',
+            endpoint=f"crm/v4/associations/line_items/deals/batch/create",
+            data=json.dumps(data)
+        )['content']
 
     def update_line_items(self, records):
         self.logger.log_text(
@@ -310,6 +359,17 @@ class HubSpotService(BaseService):
         return self.hubspot_client.delete_record(
             object_type='line_item',
             object_id=line_item_id
+        )['content']
+
+    def delete_line_items(self, line_item_ids):
+        self.logger.log_text(f"Deleting line items {line_item_ids}", severity='DEBUG')
+        data = {
+            'inputs': [{'id': line_item_id} for line_item_id in line_item_ids]
+        }
+        return self.hubspot_client.custom_request(
+            method='POST',
+            endpoint=f"crm/v3/objects/line_items/batch/archive",
+            data=json.dumps(data)
         )['content']
 
     def get_products(self, property_names, after=None):

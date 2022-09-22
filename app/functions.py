@@ -11,6 +11,7 @@ logging_client = logging.Client()
 logger = logging_client.logger(log_name)
 
 PRODUCT_PROPERTIES = ['name', 'price', 'tier_2', 'tier_3', 'hs_product_id', 'hs_sku']
+LINE_ITEM_PROPERTIES = ['hs_product_id', 'price', 'hs_sku']
 
 
 @inject
@@ -248,10 +249,13 @@ def sync_line_items(
         pricing_property = 'tier_3'
 
     line_items_to_update = []
+    line_items_to_delete = []
+    line_items_to_create = []
     if deal.get('associations'):
         known_product_ids = []
-        for association in deal['associations']['line items']['results']:
-            line_item = hubspot_service.get_line_item(line_item_id=association['id'])
+        line_item_ids = [association['id'] for association in deal['associations']['line items']['results']]
+        deal_line_items = hubspot_service.get_line_items(line_item_ids=line_item_ids)
+        for line_item in deal_line_items:
             product_id = line_item['properties']['hs_product_id']
             if (
                 product_id in products.keys()
@@ -265,9 +269,13 @@ def sync_line_items(
                 line_items_to_update.append(line_item)
             else:
                 # delete line items for unknown products or unknown price
-                hubspot_service.delete_line_item(line_item_id=line_item['id'])
+                line_items_to_delete.append(line_item['id'])
 
-        hubspot_service.update_line_items(records=line_items_to_update)
+        if len(line_items_to_update) > 0:
+            hubspot_service.update_line_items(records=line_items_to_update)
+
+        if len(line_items_to_delete) > 0:
+            hubspot_service.delete_line_items(line_item_ids=line_items_to_delete)
 
         # create missing line items
         for product_id, product in products.items():
@@ -279,9 +287,7 @@ def sync_line_items(
                         'quantity': "1",
                         'price': product[pricing_property]
                     }
-
-                    line_item = hubspot_service.create_line_item(properties=properties)
-                    hubspot_service.set_deal_for_line_item(line_item_id=line_item['id'], deal_id=sync_request.object_id)
+                    line_items_to_create.append(properties)
     else:
         for product_id, product in products.items():
             if product.get(pricing_property) and product.get('hs_sku'):
@@ -291,7 +297,11 @@ def sync_line_items(
                     'quantity': 1,
                     'price': product[pricing_property]
                 }
+                line_items_to_create.append(properties)
 
-                line_item = hubspot_service.create_line_item(properties=properties)
-                hubspot_service.set_deal_for_line_item(line_item_id=line_item['id'], deal_id=sync_request.object_id)
-
+    if len(line_items_to_create) > 0:
+        line_items = hubspot_service.create_line_items(line_items=line_items_to_create)
+        hubspot_service.set_deal_for_line_items(
+            line_items=line_items,
+            deal_id=sync_request.object_id
+        )
