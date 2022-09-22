@@ -93,20 +93,6 @@
       <option name="presentableId" value="Default" />
       <updated>1654482756064</updated>
     </task>
-    <task id="LOCAL-00028" summary="reformatting">
-      <created>1655214609578</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1655214609578</updated>
-    </task>
-    <task id="LOCAL-00029" summary="reformatting">
-      <created>1655215439820</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1655215439820</updated>
-    </task>
     <task id="LOCAL-00030" summary="reformatting">
       <created>1655215858289</created>
       <option name="number" value="00030" />
@@ -436,7 +422,21 @@
       <option name="project" value="LOCAL" />
       <updated>1663813337764</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="bulkify">
+      <created>1663814045388</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1663814045388</updated>
+    </task>
+    <task id="LOCAL-00078" summary="bulkify">
+      <created>1663814428977</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1663814428977</updated>
+    </task>
+    <option name="localTasksCounter" value="79" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
