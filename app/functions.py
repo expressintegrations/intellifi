@@ -239,8 +239,9 @@ def sync_line_items(
     )
     if not sync_request.pricing_tier:
         if deal.get('associations'):
-            for association in deal['associations']['line_items']['results']:
-                hubspot_service.delete_line_item(line_item_id=association['id'])
+            line_item_ids = [association['id'] for association in deal['associations']['line_items']['results']]
+            hubspot_service.delete_line_items(line_item_ids=line_item_ids)
+            return
     products = hubspot_service.get_all_products(property_names=PRODUCT_PROPERTIES)
     pricing_property = 'price'
     if sync_request.pricing_tier == PricingTier.TIER_2:
@@ -253,7 +254,7 @@ def sync_line_items(
     line_items_to_create = []
     if deal.get('associations'):
         known_product_ids = []
-        line_item_ids = [association['id'] for association in deal['associations']['line items']['results']]
+        line_item_ids = [association['id'] for association in deal['associations']['line_items']['results']]
         deal_line_items = hubspot_service.get_line_items(line_item_ids=line_item_ids)
         for line_item in deal_line_items:
             product_id = line_item['properties']['hs_product_id']
