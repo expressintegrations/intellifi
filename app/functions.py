@@ -171,7 +171,8 @@ def get_emerge_company(
 @inject
 def sync_emerge_companies_to_hubspot(
     emerge_service: EmergeService = Depends(Provide[Container.emerge_service]),
-    cloud_tasks_service: CloudTasksService = Depends(Provide[Container.cloud_tasks_service])
+    cloud_tasks_service: CloudTasksService = Depends(Provide[Container.cloud_tasks_service]),
+    force: bool = False
 ):
     start_time = datetime.now()
     last_run_time = start_time - timedelta(days=1)
@@ -181,7 +182,7 @@ def sync_emerge_companies_to_hubspot(
     )
     for index, customer in enumerate(emerge_service.get_all_customers()):
         try:
-            if customer.last_modified_date > last_run_time:
+            if (customer.last_modified_date > last_run_time) or force:
                 cloud_tasks_service.enqueue(
                     'hubspot/v1/company-sync/worker',
                     payload=HubSpotCompanySyncRequest(

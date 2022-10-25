@@ -187,7 +187,8 @@ def hubspot_deal_sync_worker(event: HubSpotDealSyncRequest):
 
 @router.post('/intellifi/v1/companies/sync')
 def sync_emerge_companies_to_hubspot(
-    request: Request
+    request: Request,
+    force: bool = False
 ):
     if request.headers.get('x-cloudscheduler-jobname') != 'intellifi_companies_sync':
         raise HTTPException(
@@ -195,7 +196,7 @@ def sync_emerge_companies_to_hubspot(
             detail="You are not authorized",
         )
     try:
-        functions.sync_emerge_companies_to_hubspot()
+        functions.sync_emerge_companies_to_hubspot(force=force)
     except Exception:
         logger.log_text(
             traceback.format_exc(),

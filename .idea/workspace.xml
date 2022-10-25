@@ -4,11 +4,12 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="fix duplicates">
+    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="add new attributes to company sync">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/endpoints.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/endpoints.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/functions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/etc/config-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/etc/config-dev.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,13 +96,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1654482756064</updated>
-    </task>
-    <task id="LOCAL-00032" summary="skip updates for blank values">
-      <created>1655217406478</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1655217406478</updated>
     </task>
     <task id="LOCAL-00033" summary="skip updates for blank values">
       <created>1655218592858</created>
@@ -439,7 +433,14 @@
       <option name="project" value="LOCAL" />
       <updated>1666667746350</updated>
     </task>
-    <option name="localTasksCounter" value="81" />
+    <task id="LOCAL-00081" summary="add new attributes to company sync">
+      <created>1666671091778</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1666671091778</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -461,7 +462,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="companies endpoint" />
     <MESSAGE value="adding sync services and endpoints. Updating CRM card" />
     <MESSAGE value="trying to fix auth" />
     <MESSAGE value="filtering sync requests" />
@@ -486,6 +486,7 @@
     <MESSAGE value="add hs_sku" />
     <MESSAGE value="bulkify" />
     <MESSAGE value="fix duplicates" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix duplicates" />
+    <MESSAGE value="add new attributes to company sync" />
+    <option name="LAST_COMMIT_MESSAGE" value="add new attributes to company sync" />
   </component>
 </project>

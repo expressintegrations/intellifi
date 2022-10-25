@@ -25,9 +25,9 @@ class HubSpotCompanySyncRequest(BaseModel):
     year: int = datetime.today().year
     month: int = datetime.today().month
     emerge_company_id: Optional[int]
-    days_from_last_report = Optional[int],
-    account_manager_email = Optional[str],
-    status_change_date = Optional[datetime]
+    days_from_last_report: Optional[int]
+    account_manager_email: Optional[str]
+    status_change_date: Optional[datetime]
 
 
 class HubSpotDealSyncRequest(BaseModel):
