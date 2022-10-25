@@ -188,7 +188,7 @@ def get_or_create_hubspot_company_by_name(
     hubspot_service: HubSpotService = Depends(Provide[Container.hubspot_service])
 ):
     companies = hubspot_service.get_company_by_name(
-        company_name=company_name
+        company_name=company_name.strip()
     )
     logger.log_text(
         f"Companies search result for {company_name}: {companies}",

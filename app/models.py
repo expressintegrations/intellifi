@@ -149,6 +149,7 @@ class EmergeCompanyBillingInfo(BaseModel):
                 company_name = f"{company_name} ⭐"
         return {
             "name": company_name,
+            "emerge_company_id": self.company_id,
             "date_opened": int(self.date_opened.timestamp() * 1000) if self.date_opened else None,
             "of_locations": int(self.number_of_locations) if self.number_of_locations else None,
             "company_status": self.account_status.upper() if self.account_status else None,
