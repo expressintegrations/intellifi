@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
 from google.cloud import logging
@@ -66,9 +68,14 @@ def sync_emerge_company_to_hubspot(
                     company_to_merge=company_to_merge['id'],
                     company_to_keep=hubspot_company_id
                 )
+    owner_id = hubspot_service.get_owner_by_email(email=hubspot_company_sync_request.account_manager_email)
     update_result = hubspot_service.update_company(
         company_id=hubspot_company_id,
-        properties=emerge_company.to_hubspot_company()
+        properties=emerge_company.to_hubspot_company(
+            days_from_last_report=hubspot_company_sync_request.days_from_last_report,
+            owner_id=owner_id,
+            status_change_date=hubspot_company_sync_request.status_change_date
+        )
     )
     logger.log_text(
         f"Company update result for {hubspot_company_id}: {update_result}",
@@ -166,14 +173,24 @@ def sync_emerge_companies_to_hubspot(
     emerge_service: EmergeService = Depends(Provide[Container.emerge_service]),
     cloud_tasks_service: CloudTasksService = Depends(Provide[Container.cloud_tasks_service])
 ):
+    start_time = datetime.now()
+    last_run_time = start_time - timedelta(days=1)
+    logger.log_text(
+        f"Checking for records updated since {last_run_time}...",
+        severity='DEBUG'
+    )
     for index, customer in enumerate(emerge_service.get_all_customers()):
         try:
-            cloud_tasks_service.enqueue(
-                'hubspot/v1/company-sync/worker',
-                payload=HubSpotCompanySyncRequest(
-                    emerge_company_id=customer.company_id
-                ).dict()
-            )
+            if customer.last_modified_date > last_run_time:
+                cloud_tasks_service.enqueue(
+                    'hubspot/v1/company-sync/worker',
+                    payload=HubSpotCompanySyncRequest(
+                        emerge_company_id=customer.company_id,
+                        days_from_last_report=customer.days_from_last_report,
+                        account_manager_email=customer.account_manager_email,
+                        status_change_date=customer.status_change_date
+                    ).dict()
+                )
         except Exception as e:
             logger.log_text(
                 f"Job failed at customer {index + 1}: {customer.company_name} ({customer.company_id}) with the failure:"

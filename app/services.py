@@ -108,6 +108,7 @@ class EmergeService(BaseService):
 
 
 class HubSpotService(BaseService):
+    cache = {}
 
     def __init__(
         self,
@@ -388,3 +389,18 @@ class HubSpotService(BaseService):
             result = self.get_products(property_names=property_names, after=result['paging']['next']['after'])
             products += result['results']
         return {p['id']: p['properties'] for p in products}
+
+    def get_owner_by_email(self, email: str = None):
+        if not email:
+            return None
+        self.logger.log_text(f"Getting owner by email {email}", severity='DEBUG')
+        if email not in self.cache:
+            owner_result = self.hubspot_client.custom_request(
+                method='GET',
+                endpoint=f"crm/v3/owners?email={email}"
+            )['content']
+            if len(owner_result['results']) == 0:
+                self.cache[email] = None
+            else:
+                self.cache[email] = owner_result['results'][0]['id']
+        return self.cache[email]

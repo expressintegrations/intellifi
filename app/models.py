@@ -25,6 +25,9 @@ class HubSpotCompanySyncRequest(BaseModel):
     year: int = datetime.today().year
     month: int = datetime.today().month
     emerge_company_id: Optional[int]
+    days_from_last_report = Optional[int],
+    account_manager_email = Optional[str],
+    status_change_date = Optional[datetime]
 
 
 class HubSpotDealSyncRequest(BaseModel):
@@ -93,6 +96,10 @@ class EmergeCompanyInfo(BaseModel):
     date_opened: datetime = pydantic.Field(alias="DateOpened")
     number_of_users: int = pydantic.Field(alias="NumberOfUsers")
     number_of_locations: int = pydantic.Field(alias="NumberOfLocations")
+    days_from_last_report: int = pydantic.Field(alias="DaysFromLastReport")
+    account_manager_email: str = pydantic.Field(alias="AccountManagerEmail")
+    status_change_date: datetime = pydantic.Field(alias="StatusChangeDate")
+    last_modified_date: datetime = pydantic.Field(alias="LastModifiedDate")
 
 
 class EmergeCompanyBillingInfo(BaseModel):
@@ -110,7 +117,12 @@ class EmergeCompanyBillingInfo(BaseModel):
     product_types_current_month: Optional[EmergeProductTypes] = pydantic.Field(alias="ProductsTypeCurrentMonth")
     product_types_ytd: Optional[EmergeProductTypes] = pydantic.Field(alias="ProductsTypeYTD")
 
-    def to_hubspot_company(self):
+    def to_hubspot_company(
+        self,
+        days_from_last_report: Optional[int] = None,
+        owner_id: Optional[int] = None,
+        status_change_date: Optional[datetime] = None
+    ):
         change_in_sales = "N/A"
         if (
             self.sales_current_month
@@ -168,7 +180,10 @@ class EmergeCompanyBillingInfo(BaseModel):
             self.product_types_current_month else None,
             "product_types_ytd": self.product_types_ytd.to_string() if self.product_types_ytd else None,
             "last_report_run": int(self.last_report_run.timestamp() * 1000) if self.last_report_run else None,
-            "customer_deal_stages_sync": True
+            "customer_deal_stages_sync": True,
+            "days_from_last_report": days_from_last_report,
+            "hubspot_owner_id": owner_id,
+            "last_status_change_date": int(status_change_date.timestamp() * 1000) if status_change_date else None,
         }
 
     def to_hubspot_crm_card(self):

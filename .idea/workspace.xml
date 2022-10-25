@@ -4,9 +4,11 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="bulkify">
+    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="fix duplicates">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/functions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,13 +95,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1654482756064</updated>
-    </task>
-    <task id="LOCAL-00031" summary="reformatting">
-      <created>1655216086855</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1655216086855</updated>
     </task>
     <task id="LOCAL-00032" summary="skip updates for blank values">
       <created>1655217406478</created>
@@ -437,7 +432,14 @@
       <option name="project" value="LOCAL" />
       <updated>1663815041635</updated>
     </task>
-    <option name="localTasksCounter" value="80" />
+    <task id="LOCAL-00080" summary="fix duplicates">
+      <created>1666667746350</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1666667746350</updated>
+    </task>
+    <option name="localTasksCounter" value="81" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -459,7 +461,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="initial commit" />
     <MESSAGE value="companies endpoint" />
     <MESSAGE value="adding sync services and endpoints. Updating CRM card" />
     <MESSAGE value="trying to fix auth" />
@@ -484,6 +485,7 @@
     <MESSAGE value="add setting to turn sync on and off" />
     <MESSAGE value="add hs_sku" />
     <MESSAGE value="bulkify" />
-    <option name="LAST_COMMIT_MESSAGE" value="bulkify" />
+    <MESSAGE value="fix duplicates" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix duplicates" />
   </component>
 </project>
