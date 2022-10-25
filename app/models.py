@@ -96,10 +96,10 @@ class EmergeCompanyInfo(BaseModel):
     date_opened: datetime = pydantic.Field(alias="DateOpened")
     number_of_users: int = pydantic.Field(alias="NumberOfUsers")
     number_of_locations: int = pydantic.Field(alias="NumberOfLocations")
-    days_from_last_report: int = pydantic.Field(alias="DaysFromLastReport")
-    account_manager_email: str = pydantic.Field(alias="AccountManagerEmail")
-    status_change_date: datetime = pydantic.Field(alias="StatusChangeDate")
-    last_modified_date: datetime = pydantic.Field(alias="LastModifiedDate")
+    days_from_last_report: Optional[int] = pydantic.Field(alias="DaysFromLastReport")
+    account_manager_email: Optional[str] = pydantic.Field(alias="AccountManagerEmail")
+    status_change_date: Optional[datetime] = pydantic.Field(alias="StatusChangeDate")
+    last_modified_date: Optional[datetime] = pydantic.Field(alias="LastModifiedDate")
 
 
 class EmergeCompanyBillingInfo(BaseModel):
