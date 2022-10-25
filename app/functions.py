@@ -183,13 +183,14 @@ def sync_emerge_companies_to_hubspot(
     for index, customer in enumerate(emerge_service.get_all_customers()):
         try:
             if (customer.last_modified_date > last_run_time) or force:
+                scd = int(customer.status_change_date.timestamp() * 1000) if customer.status_change_date else None
                 cloud_tasks_service.enqueue(
                     'hubspot/v1/company-sync/worker',
                     payload=HubSpotCompanySyncRequest(
                         emerge_company_id=customer.company_id,
                         days_from_last_report=customer.days_from_last_report,
                         account_manager_email=customer.account_manager_email,
-                        status_change_date=customer.status_change_date
+                        status_change_date=scd
                     ).dict()
                 )
         except Exception as e:

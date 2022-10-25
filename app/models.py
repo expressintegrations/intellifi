@@ -27,7 +27,7 @@ class HubSpotCompanySyncRequest(BaseModel):
     emerge_company_id: Optional[int]
     days_from_last_report: Optional[int]
     account_manager_email: Optional[str]
-    status_change_date: Optional[datetime]
+    status_change_date: Optional[int]
 
 
 class HubSpotDealSyncRequest(BaseModel):
@@ -121,7 +121,7 @@ class EmergeCompanyBillingInfo(BaseModel):
         self,
         days_from_last_report: Optional[int] = None,
         owner_id: Optional[int] = None,
-        status_change_date: Optional[datetime] = None
+        status_change_date: Optional[int] = None
     ):
         change_in_sales = "N/A"
         if (
@@ -183,7 +183,7 @@ class EmergeCompanyBillingInfo(BaseModel):
             "customer_deal_stages_sync": True,
             "days_from_last_report": days_from_last_report,
             "hubspot_owner_id": owner_id,
-            "last_status_change_date": int(status_change_date.timestamp() * 1000) if status_change_date else None,
+            "last_status_change_date": status_change_date
         }
 
     def to_hubspot_crm_card(self):
