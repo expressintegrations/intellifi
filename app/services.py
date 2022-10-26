@@ -125,16 +125,19 @@ class HubSpotService(BaseService):
         self.expires_at_location = expires_at_location
         self.hubspot_client = hubspot_client
         self.firestore_client = firestore_client
-        auth_doc = self.firestore_client.collection(self.firestore_collection).document(self.auth_document)
-        auth = auth_doc.get().to_dict()
+        super().__init__()
+
+    def ensure_auth(self):
         if self.hubspot_client.auth_refreshed:
+            auth_doc = self.firestore_client.collection(self.firestore_collection).document(self.auth_document)
+            auth = auth_doc.get().to_dict()
             auth[self.access_token_location] = self.hubspot_client.access_token
             auth[self.expires_at_location] = self.hubspot_client.expires_at
             auth_doc.set(auth, merge=True)
             self.hubspot_client.auth_refreshed = False
-        super().__init__()
 
     def update_company(self, company_id, properties):
+        self.ensure_auth()
         self.logger.log_text(f"Updating company {company_id} with properties {properties}", severity='DEBUG')
         return self.hubspot_client.update_record(
             object_type='companies',
@@ -143,6 +146,7 @@ class HubSpotService(BaseService):
         )['content']
 
     def create_company(self, properties):
+        self.ensure_auth()
         self.logger.log_text(f"Creating company with properties {properties}", severity='DEBUG')
         return self.hubspot_client.create_record(
             object_type='companies',
@@ -156,6 +160,7 @@ class HubSpotService(BaseService):
         after: int = None,
         sorts: list = tuple()
     ):
+        self.ensure_auth()
         self.logger.log_text(f"Getting company by emerge company {emerge_company_id}", severity='DEBUG')
         return self.hubspot_client.search_records_by_property_value(
             object_type='companies',
@@ -173,6 +178,7 @@ class HubSpotService(BaseService):
         after: int = None,
         sorts: list = tuple()
     ):
+        self.ensure_auth()
         self.logger.log_text(f"Getting company by name {company_name}", severity='DEBUG')
         return self.hubspot_client.search_records_by_property_value(
             object_type='companies',
@@ -184,6 +190,7 @@ class HubSpotService(BaseService):
         )['content']
 
     def get_deal(self, deal_id, property_names=tuple(), associations=None):
+        self.ensure_auth()
         self.logger.log_text(f"Getting deal {deal_id}", severity='DEBUG')
         return self.hubspot_client.get_record(
             object_type='deals',
@@ -193,6 +200,7 @@ class HubSpotService(BaseService):
         )['content']
 
     def update_deal(self, deal_id, properties):
+        self.ensure_auth()
         self.logger.log_text(f"Updating deal {deal_id} with properties {properties}", severity='DEBUG')
         return self.hubspot_client.update_record(
             object_type='deals',
@@ -207,6 +215,7 @@ class HubSpotService(BaseService):
         after: int = None,
         sorts: list = tuple()
     ):
+        self.ensure_auth()
         self.logger.log_text(f"Getting deal by name {deal_name}", severity='DEBUG')
         return self.hubspot_client.search_records_by_property_value(
             object_type='deals',
@@ -218,6 +227,7 @@ class HubSpotService(BaseService):
         )['content']
 
     def set_customer_company_for_deal(self, deal_id, company_id):
+        self.ensure_auth()
         self.logger.log_text(f"Setting customer company {company_id} for deal {deal_id}", severity='DEBUG')
         return self.hubspot_client.associate(
             from_object_type='deals',
@@ -228,6 +238,7 @@ class HubSpotService(BaseService):
         )
 
     def set_company_for_deal(self, deal_id, company_id):
+        self.ensure_auth()
         self.logger.log_text(f"Setting company {company_id} for deal {deal_id}", severity='DEBUG')
         return self.hubspot_client.set_company_for_deal(
             deal_id=deal_id,
@@ -235,6 +246,7 @@ class HubSpotService(BaseService):
         )
 
     def get_company_for_deal(self, deal_id):
+        self.ensure_auth()
         self.logger.log_text(f"Getting company for deal {deal_id}", severity='DEBUG')
         resp = self.hubspot_client.get_associations(
             from_object_type='deals',
@@ -249,6 +261,7 @@ class HubSpotService(BaseService):
         )
 
     def merge_companies(self, company_to_merge: int, company_to_keep: int):
+        self.ensure_auth()
         self.logger.log_text(f"Merging company {company_to_merge} into {company_to_keep}")
         merge_data = {
             "primaryObjectId": company_to_keep,
@@ -261,6 +274,7 @@ class HubSpotService(BaseService):
         )
 
     def get_line_items_for_deal(self, deal_id):
+        self.ensure_auth()
         self.logger.log_text(f"Getting line items for deal {deal_id}", severity='DEBUG')
         resp = self.hubspot_client.get_associations(
             from_object_type='deals',
@@ -275,6 +289,7 @@ class HubSpotService(BaseService):
         )
 
     def get_line_item(self, line_item_id, properties=None):
+        self.ensure_auth()
         self.logger.log_text(f"Getting line item {line_item_id} with properties {properties}", severity='DEBUG')
         return self.hubspot_client.get_record(
             object_type='line_item',
@@ -283,6 +298,7 @@ class HubSpotService(BaseService):
         )['content']
 
     def get_line_items(self, line_item_ids, properties=None):
+        self.ensure_auth()
         self.logger.log_text(f"Getting line items {line_item_ids} with properties {properties}", severity='DEBUG')
         data = {
             'properties': properties,
@@ -295,6 +311,7 @@ class HubSpotService(BaseService):
         )['content']['results']
 
     def create_line_item(self, properties):
+        self.ensure_auth()
         self.logger.log_text(f"Creating line item with properties {properties}", severity='DEBUG')
         return self.hubspot_client.create_record(
             object_type='line_item',
@@ -302,6 +319,7 @@ class HubSpotService(BaseService):
         )['content']
 
     def create_line_items(self, line_items):
+        self.ensure_auth()
         self.logger.log_text(f"Creating line items {line_items}", severity='DEBUG')
         data = {
             'inputs': [{'properties': line_item} for line_item in line_items]
@@ -313,6 +331,7 @@ class HubSpotService(BaseService):
         )['content']['results']
 
     def set_deal_for_line_item(self, line_item_id, deal_id):
+        self.ensure_auth()
         self.logger.log_text(f"Setting deal {deal_id} for line item {line_item_id}", severity='DEBUG')
         return self.hubspot_client.set_deal_for_line_item(
             deal_id=deal_id,
@@ -320,6 +339,7 @@ class HubSpotService(BaseService):
         )
 
     def set_deal_for_line_items(self, line_items, deal_id):
+        self.ensure_auth()
         self.logger.log_text(f"Setting deal {deal_id} for line items {line_items}", severity='DEBUG')
         data = {
             'inputs': [
@@ -346,6 +366,7 @@ class HubSpotService(BaseService):
         )['content']
 
     def update_line_items(self, records):
+        self.ensure_auth()
         self.logger.log_text(
             f"Updating {len(records)} line items",
             severity='DEBUG'
@@ -356,6 +377,7 @@ class HubSpotService(BaseService):
         )['content']
 
     def delete_line_item(self, line_item_id):
+        self.ensure_auth()
         self.logger.log_text(f"Deleting line item {line_item_id}", severity='DEBUG')
         return self.hubspot_client.delete_record(
             object_type='line_item',
@@ -363,6 +385,7 @@ class HubSpotService(BaseService):
         )['content']
 
     def delete_line_items(self, line_item_ids):
+        self.ensure_auth()
         self.logger.log_text(f"Deleting line items {line_item_ids}", severity='DEBUG')
         data = {
             'inputs': [{'id': line_item_id} for line_item_id in line_item_ids]
@@ -374,6 +397,7 @@ class HubSpotService(BaseService):
         )['content']
 
     def get_products(self, property_names, after=None):
+        self.ensure_auth()
         return self.hubspot_client.get_records(
             object_type='product',
             property_names=property_names,
@@ -381,6 +405,7 @@ class HubSpotService(BaseService):
         )['content']
 
     def get_all_products(self, property_names):
+        self.ensure_auth()
         self.logger.log_text(f"Getting products", severity='DEBUG')
         products = []
         result = self.get_products(property_names=property_names)
@@ -391,6 +416,7 @@ class HubSpotService(BaseService):
         return {p['id']: p['properties'] for p in products}
 
     def get_owner_by_email(self, email: str = None):
+        self.ensure_auth()
         if not email:
             return None
         self.logger.log_text(f"Getting owner by email {email}", severity='DEBUG')
