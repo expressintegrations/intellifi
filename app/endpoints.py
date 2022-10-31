@@ -27,7 +27,7 @@ logger = logging_client.logger(log_name)
 router = APIRouter()
 
 
-@router.get('/intelifi/v1/proposal')
+@router.post('/intelifi/v1/proposal')
 async def get_proposal_session(
     pandadoc_proposal_request: PandadocProposalRequest
 ):

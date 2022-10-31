@@ -4,17 +4,7 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="fix auth errors">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/application.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/containers.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/containers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/functions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/etc/config-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/etc/config-dev.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/etc/config-prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/etc/config-prod.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-    </list>
+    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="add pandadoc proposal endpoint" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -100,13 +90,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1654482756064</updated>
-    </task>
-    <task id="LOCAL-00038" summary="adding change in sales">
-      <created>1655325517703</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1655325517703</updated>
     </task>
     <task id="LOCAL-00039" summary="adding change in sales">
       <created>1655325932826</created>
@@ -444,7 +427,14 @@
       <option name="project" value="LOCAL" />
       <updated>1666801289521</updated>
     </task>
-    <option name="localTasksCounter" value="87" />
+    <task id="LOCAL-00087" summary="add pandadoc proposal endpoint">
+      <created>1667187556371</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1667187556371</updated>
+    </task>
+    <option name="localTasksCounter" value="88" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -466,7 +456,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="trying to fix auth" />
     <MESSAGE value="filtering sync requests" />
     <MESSAGE value="allowing blank emerge company ids" />
     <MESSAGE value="reformatting" />
@@ -491,6 +480,7 @@
     <MESSAGE value="fix duplicates" />
     <MESSAGE value="add new attributes to company sync" />
     <MESSAGE value="fix auth errors" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix auth errors" />
+    <MESSAGE value="add pandadoc proposal endpoint" />
+    <option name="LAST_COMMIT_MESSAGE" value="add pandadoc proposal endpoint" />
   </component>
 </project>
