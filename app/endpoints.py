@@ -110,16 +110,17 @@ async def process_hubspot_events(
         )
     try:
         for event in events:
-            if event.propertyName == 'emerge_company_id' and event.subscriptionType == 'company.propertyChange':
-                cloud_tasks_service.enqueue(
-                    'hubspot/v1/company-sync/worker',
-                    payload=HubSpotCompanySyncRequest(
-                        object_id=event.objectId,
-                        emerge_company_id=int(event.propertyValue) if event.propertyValue and len(
-                            event.propertyValue
-                        ) > 0 else None
-                    ).dict()
-                )
+            # turning this off due to infinite loops
+            # if event.propertyName == 'emerge_company_id' and event.subscriptionType == 'company.propertyChange':
+            #     cloud_tasks_service.enqueue(
+            #         'hubspot/v1/company-sync/worker',
+            #         payload=HubSpotCompanySyncRequest(
+            #             object_id=event.objectId,
+            #             emerge_company_id=int(event.propertyValue) if event.propertyValue and len(
+            #                 event.propertyValue
+            #             ) > 0 else None
+            #         ).dict()
+            #     )
 
             if event.propertyName == 'customer_deal' and event.subscriptionType == 'deal.propertyChange':
                 cloud_tasks_service.enqueue(
