@@ -7,7 +7,6 @@ from ExpressIntegrations.HubSpot import hubspot
 from google.cloud import firestore, logging, tasks_v2
 from pandadoc_client.api import documents_api
 from pandadoc_client.model.document_create_by_template_request_tokens import DocumentCreateByTemplateRequestTokens
-from pandadoc_client.model.document_create_link_request import DocumentCreateLinkRequest
 from pandadoc_client.model.document_create_request import DocumentCreateRequest
 from pandadoc_client.model.document_create_request_recipients import DocumentCreateRequestRecipients
 from pandadoc_client.model.document_send_request import DocumentSendRequest
@@ -42,13 +41,18 @@ class PandadocService:
     TOKEN_PACKAGE_3_PRICE = 'package_3_price'
     TOKEN_PREPARED_BY = 'prepared_by'
     MAX_CHECK_RETRIES = 5
-    DOCUMENT_LIFETIME = 1814400
+    DOCUMENT_LIFETIME = 1814400.0
 
     def __init__(
         self,
-        pandadoc_api_client: pandadoc_client.ApiClient,
+        api_key: str,
     ) -> None:
-        self.pandadoc_api_client = pandadoc_api_client
+        self.api_key = api_key
+        cfg = pandadoc_client.Configuration(
+            host="https://api.pandadoc.com",
+            api_key={"apiKey": f"API-Key {api_key}"},
+        )
+        self.pandadoc_api_client = pandadoc_client.ApiClient(cfg)
         self.api_instance = documents_api.DocumentsApi(self.pandadoc_api_client)
         super().__init__()
 
@@ -158,13 +162,23 @@ class PandadocService:
         )
 
     def get_document_session(self, recipient, document):
-        return self.api_instance.create_document_link(
-            id=document['id'],
-            document_create_link_request=DocumentCreateLinkRequest(
-                recipient=recipient,
-                lifetime=self.DOCUMENT_LIFETIME
-            )
-        )
+        import requests
+
+        url = f"https://api.pandadoc.com/public/v1/documents/{document['id']}/session"
+
+        headers = {
+            "accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": f"API-Key {self.api_key}"
+        }
+
+        data = {
+            "recipient": recipient,
+            "lifetime": self.DOCUMENT_LIFETIME
+        }
+
+        response = requests.post(url, headers=headers, json=data)
+        return response.json()
 
 
 class FirestoreService(BaseService):

@@ -31,6 +31,7 @@ router = APIRouter()
 async def get_proposal_session(
     pandadoc_proposal_request: PandadocProposalRequest
 ):
+    # test()
     return functions.get_pandadoc_proposal_session(pandadoc_proposal_request=pandadoc_proposal_request)
 
 

@@ -1,4 +1,3 @@
-import pandadoc_client
 from dependency_injector import containers, providers
 from ExpressIntegrations.Emerge import emerge
 from ExpressIntegrations.HubSpot import hubspot
@@ -63,15 +62,7 @@ class Container(containers.DeclarativeContainer):
         emerge_client=emerge_client
     )
 
-    cfg = pandadoc_client.Configuration(
-        api_key={"apiKey": f"API-Key {config.pandadoc.api_key}"},
-    )
-    pandadoc_api_client = providers.Factory(
-        pandadoc_client.ApiClient,
-        configuration=cfg
-    )
-
     pandadoc_service = providers.Factory(
         services.PandadocService,
-        pandadoc_api_client=pandadoc_api_client
+        api_key=config.pandadoc.api_key
     )
