@@ -91,13 +91,6 @@
       <option name="presentableId" value="Default" />
       <updated>1654482756064</updated>
     </task>
-    <task id="LOCAL-00042" summary="adding change in sales">
-      <created>1655347532136</created>
-      <option name="number" value="00042" />
-      <option name="presentableId" value="LOCAL-00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1655347532137</updated>
-    </task>
     <task id="LOCAL-00043" summary="adding deal sync">
       <created>1655348047571</created>
       <option name="number" value="00043" />
@@ -434,7 +427,14 @@
       <option name="project" value="LOCAL" />
       <updated>1667196454950</updated>
     </task>
-    <option name="localTasksCounter" value="91" />
+    <task id="LOCAL-00091" summary="add pandadoc proposal endpoint">
+      <created>1667196806138</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1667196806138</updated>
+    </task>
+    <option name="localTasksCounter" value="92" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

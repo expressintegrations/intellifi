@@ -29,9 +29,11 @@ router = APIRouter()
 
 @router.post('/intelifi/v1/proposal')
 async def get_proposal_session(
-    pandadoc_proposal_request: PandadocProposalRequest
+    request: Request
 ):
-    # test()
+    body = await request.json()
+    print(body)
+    pandadoc_proposal_request = PandadocProposalRequest.parse_obj(body)
     return functions.get_pandadoc_proposal_session(pandadoc_proposal_request=pandadoc_proposal_request)
 
 
