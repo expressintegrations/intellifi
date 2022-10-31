@@ -44,6 +44,15 @@ def create_app(env: str = 'prod') -> FastAPI:
         )
     )
 
+    # Get the Pandadoc api key
+    container.config.pandadoc.api_key.from_value(
+        Utils.access_secret_version(
+            container.config.get('gcloud.project'),
+            container.config.get('pandadoc.api_key_secret.location'),
+            container.config.get('pandadoc.api_key_secret.version')
+        )
+    )
+
     # Wire up the endpoints for dependency injection
     container.wire(modules=[endpoints, functions])
 

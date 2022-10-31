@@ -5,8 +5,9 @@ from fastapi import Depends
 from google.cloud import logging
 
 from .containers import Container
-from .models import HubSpotCompanySyncRequest, HubSpotDealSyncRequest, HubSpotLineItemSyncRequest, PricingTier
-from .services import CloudTasksService, EmergeService, HubSpotService
+from .models import HubSpotCompanySyncRequest, HubSpotDealSyncRequest, HubSpotLineItemSyncRequest, PricingTier, \
+    PandadocProposalRequest
+from .services import CloudTasksService, EmergeService, HubSpotService, PandadocService
 
 log_name = 'intellifi.functions'
 logging_client = logging.Client()
@@ -14,6 +15,14 @@ logger = logging_client.logger(log_name)
 
 PRODUCT_PROPERTIES = ['name', 'price', 'tier_2', 'tier_3', 'hs_product_id', 'hs_sku']
 LINE_ITEM_PROPERTIES = ['hs_product_id', 'price', 'hs_sku']
+
+
+@inject
+def get_pandadoc_proposal_session(
+    pandadoc_proposal_request: PandadocProposalRequest,
+    pandadoc_service: PandadocService = Depends(Provide[Container.pandadoc_service])
+):
+    return pandadoc_service.get_proposal_session(pandadoc_proposal_request=pandadoc_proposal_request)
 
 
 @inject

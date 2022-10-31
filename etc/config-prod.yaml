@@ -13,6 +13,10 @@ emerge:
     auth_document: auth
     access_token:
       location: access_token_prod
+pandadoc:
+  api_key_secret:
+    location: pandadoc_api_key
+    version: latest
 hubspot:
   client_id: 24b7488c-4d57-42c0-8a57-d7e41af9f9e1
   client_secret:

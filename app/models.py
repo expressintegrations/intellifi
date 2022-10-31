@@ -1,9 +1,23 @@
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Any
 
 import pydantic
 from pydantic import BaseModel
+
+
+class PandadocProposalRequest(BaseModel):
+    email: str
+    first_name: str
+    last_name: str
+    company_name: str
+    deal_name: str
+    package_1_price: str
+    package_2_price: str
+    package_3_price: str
+    prepared_by: str
+    background_check_line_items: Optional[List[Any]]
+    drug_test_line_items: Optional[List[Any]]
 
 
 class HubSpotWebhookEvent(BaseModel):

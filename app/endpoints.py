@@ -11,7 +11,13 @@ from google.cloud import logging
 
 from . import functions
 from .containers import Container
-from .models import HubSpotCompanySyncRequest, HubSpotDealSyncRequest, HubSpotWebhookEvent, HubSpotLineItemSyncRequest
+from .models import (
+    HubSpotCompanySyncRequest,
+    HubSpotDealSyncRequest,
+    HubSpotWebhookEvent,
+    HubSpotLineItemSyncRequest,
+    PandadocProposalRequest
+)
 from .services import CloudTasksService, FirestoreService
 
 log_name = 'intellifi.endpoints'
@@ -19,6 +25,13 @@ logging_client = logging.Client()
 logger = logging_client.logger(log_name)
 
 router = APIRouter()
+
+
+@router.get('/intelifi/v1/proposal')
+async def get_proposal_session(
+    pandadoc_proposal_request: PandadocProposalRequest
+):
+    return functions.get_pandadoc_proposal_session(pandadoc_proposal_request=pandadoc_proposal_request)
 
 
 @router.get('/intellifi/v1/companies')

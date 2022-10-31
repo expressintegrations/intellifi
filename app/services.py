@@ -1,10 +1,23 @@
 import json
+from time import sleep
 
+import pandadoc_client
 from ExpressIntegrations.Emerge import emerge
 from ExpressIntegrations.HubSpot import hubspot
 from google.cloud import firestore, logging, tasks_v2
+from pandadoc_client.api import documents_api
+from pandadoc_client.model.document_create_by_template_request_tokens import DocumentCreateByTemplateRequestTokens
+from pandadoc_client.model.document_create_link_request import DocumentCreateLinkRequest
+from pandadoc_client.model.document_create_request import DocumentCreateRequest
+from pandadoc_client.model.document_create_request_recipients import DocumentCreateRequestRecipients
+from pandadoc_client.model.document_send_request import DocumentSendRequest
+from pandadoc_client.model.pricing_table_request import PricingTableRequest
+from pandadoc_client.model.pricing_table_request_row_options import PricingTableRequestRowOptions
+from pandadoc_client.model.pricing_table_request_rows import PricingTableRequestRows
+from pandadoc_client.model.pricing_table_request_sections import PricingTableRequestSections
 
-from .models import EmergeCompanyBillingInfo, EmergeCompanyInfo, HubSpotAssociationBatchReadResponse
+from .models import EmergeCompanyBillingInfo, EmergeCompanyInfo, HubSpotAssociationBatchReadResponse, \
+    PandadocProposalRequest
 
 log_name = 'intellifi.services'
 
@@ -14,6 +27,144 @@ class BaseService:
     def __init__(self) -> None:
         logging_client = logging.Client()
         self.logger = logging_client.logger(log_name)
+
+
+class PandadocService:
+    TEMPLATE_UUID = 'kYQHXrqWKwcbav3igdjdDf'
+    FOLDER_UUID = 'xU8wet8Qy99dojkkUAMi9d'
+    PRICING_TABLE_NAME = 'Additional Products'
+    BACKGROUND_CHECK_SECTION_TITLE = 'Background Checks'
+    DRUG_TESTS_SECTION_TITLE = 'Drug Tests'
+    RECIPIENT_ROLE = 'Client'
+    TOKEN_COMPANY_NAME = 'company_name'
+    TOKEN_PACKAGE_1_PRICE = 'package_1_price'
+    TOKEN_PACKAGE_2_PRICE = 'package_2_price'
+    TOKEN_PACKAGE_3_PRICE = 'package_3_price'
+    TOKEN_PREPARED_BY = 'prepared_by'
+    MAX_CHECK_RETRIES = 5
+    DOCUMENT_LIFETIME = 1814400
+
+    def __init__(
+        self,
+        pandadoc_api_client: pandadoc_client.ApiClient,
+    ) -> None:
+        self.pandadoc_api_client = pandadoc_api_client
+        self.api_instance = documents_api.DocumentsApi(self.pandadoc_api_client)
+        super().__init__()
+
+    def get_proposal_session(
+        self,
+        pandadoc_proposal_request: PandadocProposalRequest
+    ):
+        pricing_tables = [
+            PricingTableRequest(
+                name=self.PRICING_TABLE_NAME,
+                data_merge=True,
+                sections=[
+                    PricingTableRequestSections(
+                        title=self.BACKGROUND_CHECK_SECTION_TITLE,
+                        default=False,
+                        rows=[
+                            PricingTableRequestRows(
+                                options=PricingTableRequestRowOptions(),
+                                data={
+                                    "name": item['name'],
+                                    "description": item['description'],
+                                    "type": "background_check",
+                                    "price": item['price'],
+                                    "qty": 1
+                                }
+                            ) for item in pandadoc_proposal_request.background_check_line_items
+                        ]
+                    ),
+                    PricingTableRequestSections(
+                        title=self.DRUG_TESTS_SECTION_TITLE,
+                        default=False,
+                        rows=[
+                            PricingTableRequestRows(
+                                options=PricingTableRequestRowOptions(),
+                                data={
+                                    "name": item['name'],
+                                    "description": item['description'],  # fix this
+                                    "type": "drug_test",
+                                    "price": item['price'],
+                                    "qty": 1
+                                }
+                            ) for item in pandadoc_proposal_request.drug_test_line_items
+                        ]
+                    )
+                ]
+            )
+        ]
+        document_create_request = DocumentCreateRequest(
+            name=f"Proposal - {pandadoc_proposal_request.deal_name}",
+            template_uuid=self.TEMPLATE_UUID,
+            folder_id=self.FOLDER_UUID,
+            recipients=[
+                DocumentCreateRequestRecipients(
+                    email=pandadoc_proposal_request.email,
+                    first_name=pandadoc_proposal_request.first_name,
+                    last_name=pandadoc_proposal_request.last_name,
+                    role=self.RECIPIENT_ROLE
+                )
+            ],
+            tokens=[
+                DocumentCreateByTemplateRequestTokens(
+                    name=self.TOKEN_COMPANY_NAME,
+                    value=pandadoc_proposal_request.company_name
+                ),
+                DocumentCreateByTemplateRequestTokens(
+                    name=self.TOKEN_PACKAGE_1_PRICE,
+                    value=pandadoc_proposal_request.package_1_price
+                ),
+                DocumentCreateByTemplateRequestTokens(
+                    name=self.TOKEN_PACKAGE_2_PRICE,
+                    value=pandadoc_proposal_request.package_2_price
+                ),
+                DocumentCreateByTemplateRequestTokens(
+                    name=self.TOKEN_PACKAGE_3_PRICE,
+                    value=pandadoc_proposal_request.package_3_price
+                ),
+                DocumentCreateByTemplateRequestTokens(
+                    name=self.TOKEN_PREPARED_BY,
+                    value=pandadoc_proposal_request.prepared_by
+                ),
+            ],
+            pricing_tables=pricing_tables
+        )
+        document = self.api_instance.create_document(document_create_request=document_create_request)
+        self.ensure_document_created(document=document)
+        self.send_document(document=document)
+        return self.get_document_session(recipient=pandadoc_proposal_request.email, document=document)
+
+    def ensure_document_created(self, document):
+        retries = 0
+        while retries < self.MAX_CHECK_RETRIES:
+            sleep(2)
+            retries += 1
+
+            doc_status = self.api_instance.status_document(id=document['id'])
+            if doc_status.status == 'document.draft':
+                return
+
+        raise RuntimeError('Document was not sent')
+
+    def send_document(self, document):
+        self.api_instance.send_document(
+            id=document['id'],
+            document_send_request=DocumentSendRequest(
+                silent=True, subject='This doc was send via python SDK'
+            ),
+        )
+
+    def get_document_session(self, recipient, document):
+        return self.api_instance.create_document_link(
+            id=document['id'],
+            document_create_link_request=DocumentCreateLinkRequest(
+                recipient=recipient,
+                lifetime=self.DOCUMENT_LIFETIME
+            )
+        )
 
 
 class FirestoreService(BaseService):
