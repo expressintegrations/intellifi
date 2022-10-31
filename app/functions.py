@@ -52,12 +52,20 @@ def sync_emerge_company_to_hubspot(
             severity='DEBUG'
         )
         if companies['total'] == 0:
-            hubspot_company_id = get_or_create_hubspot_company_by_name(
-                company_name=emerge_company.company_name
-            )
+            if not hubspot_company_sync_request.object_id:
+                logger.log_text(
+                    (
+                        f"Unable to locate a company in HubSpot by Emerge Company ID"
+                        f" {hubspot_company_sync_request.emerge_company_id}. Skipping..."
+                    ),
+                    severity='DEBUG'
+                )
+                return
+            c_association = hubspot_service.get_company_for_deal(hubspot_company_sync_request.object_id).results[0]
+            hubspot_company_id = c_association['to'][0]['id']
             logger.log_text(
                 f"No Company found in HubSpot with Emerge Company ID {hubspot_company_sync_request.emerge_company_id}. "
-                f"Created company {hubspot_company_id} in HubSpot",
+                f"Located company {hubspot_company_id} by deal ID {hubspot_company_sync_request.object_id} in HubSpot",
                 severity='DEBUG'
             )
 
@@ -197,6 +205,7 @@ def sync_emerge_companies_to_hubspot(
                     'hubspot/v1/company-sync/worker',
                     payload=HubSpotCompanySyncRequest(
                         emerge_company_id=customer.company_id,
+                        object_id=customer.hubspot_object_id,
                         days_from_last_report=customer.days_from_last_report,
                         account_manager_email=customer.account_manager_email,
                         status_change_date=scd
