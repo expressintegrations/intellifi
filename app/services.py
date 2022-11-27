@@ -29,7 +29,8 @@ class BaseService:
 
 
 class PandadocService:
-    TEMPLATE_UUID = 'kYQHXrqWKwcbav3igdjdDf'
+    # TEMPLATE_UUID = 'kYQHXrqWKwcbav3igdjdDf'
+    TEMPLATE_UUID = 'Uv2F6mmNobuELSjx9wTdpN'
     FOLDER_UUID = 'xU8wet8Qy99dojkkUAMi9d'
     PRICING_TABLE_NAME = 'Additional Products'
     BACKGROUND_CHECK_SECTION_TITLE = 'Background Checks'
