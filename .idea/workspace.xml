@@ -4,9 +4,12 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="add pandadoc proposal endpoint">
+    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="updating format">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/endpoints.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/endpoints.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/functions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/etc/config-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/etc/config-dev.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,13 +96,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1654482756064</updated>
-    </task>
-    <task id="LOCAL-00045" summary="adding deal sync">
-      <created>1655349464532</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1655349464532</updated>
     </task>
     <task id="LOCAL-00046" summary="adding deal sync">
       <created>1655349911395</created>
@@ -437,7 +433,14 @@
       <option name="project" value="LOCAL" />
       <updated>1667227766649</updated>
     </task>
-    <option name="localTasksCounter" value="94" />
+    <task id="LOCAL-00094" summary="updating format">
+      <created>1669521085839</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1669521085839</updated>
+    </task>
+    <option name="localTasksCounter" value="95" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -459,7 +462,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="filtering sync requests" />
     <MESSAGE value="allowing blank emerge company ids" />
     <MESSAGE value="reformatting" />
     <MESSAGE value="skip updates for blank values" />
@@ -484,6 +486,7 @@
     <MESSAGE value="add new attributes to company sync" />
     <MESSAGE value="fix auth errors" />
     <MESSAGE value="add pandadoc proposal endpoint" />
-    <option name="LAST_COMMIT_MESSAGE" value="add pandadoc proposal endpoint" />
+    <MESSAGE value="updating format" />
+    <option name="LAST_COMMIT_MESSAGE" value="updating format" />
   </component>
 </project>

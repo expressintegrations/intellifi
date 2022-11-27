@@ -7,12 +7,12 @@ gcloud:
     service_account_email: 489767445099-compute@developer.gserviceaccount.com
 default_encoding: UTF-8
 emerge:
-  environment: test
+  environment: prod
   firestore:
     collection: emerge_sync
     auth_document: auth
     access_token:
-      location: access_token_dev
+      location: access_token_prod
 pandadoc:
   api_key_secret:
     location: pandadoc_api_key

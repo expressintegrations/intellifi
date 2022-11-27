@@ -42,7 +42,14 @@ def sync_emerge_company_to_hubspot(
         year=hubspot_company_sync_request.year,
         month=hubspot_company_sync_request.month
     )
-    hubspot_company_id = hubspot_company_sync_request.object_id
+    hubspot_company_id = None
+    if hubspot_company_sync_request.type == 'COMPANY':
+        hubspot_company_id = hubspot_company_sync_request.object_id
+    if hubspot_company_sync_request.type == 'DEAL':
+        associations = hubspot_service.get_company_for_deal(
+            deal_id=hubspot_company_sync_request.object_id
+        )
+        hubspot_company_id = associations.first().id
     if not hubspot_company_id:
         companies = hubspot_service.get_company_by_emerge_company(
             emerge_company_id=hubspot_company_sync_request.emerge_company_id
@@ -205,6 +212,7 @@ def sync_emerge_companies_to_hubspot(
                     'hubspot/v1/company-sync/worker',
                     payload=HubSpotCompanySyncRequest(
                         emerge_company_id=customer.company_id,
+                        type='DEAL',
                         object_id=customer.hubspot_object_id,
                         days_from_last_report=customer.days_from_last_report,
                         account_manager_email=customer.account_manager_email,

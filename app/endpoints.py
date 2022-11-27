@@ -75,6 +75,7 @@ async def get_emerge_company_crm_card(
 
     hubspot_company_sync_request = HubSpotCompanySyncRequest(
         object_id=associated_object_id,
+        type=associated_object_type,
         emerge_company_id=emerge_company_id
     )
 
