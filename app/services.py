@@ -195,6 +195,11 @@ class FirestoreService(BaseService):
         settings = doc.get().to_dict()
         return settings['line_item_sync_enabled']
 
+    def forms_enabled(self):
+        doc = self.firestore_client.collection('hubspot_sync').document('settings')
+        settings = doc.get().to_dict()
+        return settings['forms_enabled']
+
 
 class CloudTasksService(BaseService):
 
