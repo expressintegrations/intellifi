@@ -42,6 +42,10 @@ def sync_emerge_company_to_hubspot(
         year=hubspot_company_sync_request.year,
         month=hubspot_company_sync_request.month
     )
+    logger.log_text(
+        f"Syncing Emerge Company {emerge_company.json()}",
+        severity='DEBUG'
+    )
     hubspot_company_id = None
     if hubspot_company_sync_request.object_id:
         if hubspot_company_sync_request.type == 'COMPANY':
