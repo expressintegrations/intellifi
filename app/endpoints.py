@@ -32,11 +32,9 @@ router = APIRouter()
 async def get_forms_enabled(
     firestore_service: FirestoreService = Depends(Provide[Container.firestore_service]),
 ):
-    if not firestore_service.forms_enabled():
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="You are not authorized",
-        )
+    return {
+        'enabled': firestore_service.forms_enabled()
+    }
 
 
 @router.post('/intelifi/v1/proposal')
