@@ -200,6 +200,17 @@ class FirestoreService(BaseService):
         settings = doc.get().to_dict()
         return settings['forms_enabled']
 
+    def get_emerge_sync_last_run_date(self):
+        doc = self.firestore_client.collection('emerge_sync').document('settings')
+        settings = doc.get().to_dict()
+        return settings['last_run_date']
+
+    def set_emerge_sync_last_run_date(self, last_run_date: str):
+        doc = self.firestore_client.collection('hubspot_sync').document('settings')
+        settings = doc.get().to_dict()
+        settings['last_run_date'] = last_run_date
+        return doc.set(document_data=settings)
+
 
 class CloudTasksService(BaseService):
 
@@ -264,9 +275,10 @@ class EmergeService(BaseService):
         self.emerge_client = emerge_client
         super().__init__()
 
-    def get_all_customers(self):
+    def get_all_customers(self, since: str = ''):
         self.logger.log_text('Getting all customers', severity='DEBUG')
-        return [EmergeCompanyInfo.parse_obj(customer) for customer in self.emerge_client.customers(0, 1000000000)]
+        customers = self.emerge_client.customers(start=0, end=1000000000, since=since)
+        return [EmergeCompanyInfo.parse_obj(customer) for customer in customers]
 
     def get_customer_billing_info(self, company_id: int, year: int, month: int):
         self.logger.log_text(f"Getting customer {company_id}", severity='DEBUG')

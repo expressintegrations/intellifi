@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
@@ -7,7 +7,7 @@ from google.cloud import logging
 from .containers import Container
 from .models import HubSpotCompanySyncRequest, HubSpotDealSyncRequest, HubSpotLineItemSyncRequest, PricingTier, \
     PandadocProposalRequest
-from .services import CloudTasksService, EmergeService, HubSpotService, PandadocService
+from .services import CloudTasksService, EmergeService, HubSpotService, PandadocService, FirestoreService
 
 log_name = 'intellifi.functions'
 logging_client = logging.Client()
@@ -201,29 +201,32 @@ def get_emerge_company(
 def sync_emerge_companies_to_hubspot(
     emerge_service: EmergeService = Depends(Provide[Container.emerge_service]),
     cloud_tasks_service: CloudTasksService = Depends(Provide[Container.cloud_tasks_service]),
+    firestore_service: FirestoreService = Depends(Provide[Container.firestore_service]),
     force: bool = False
 ):
     start_time = datetime.now()
-    last_run_time = start_time - timedelta(days=1)
+    last_run_date = firestore_service.get_emerge_sync_last_run_date()
+    if force:
+        last_run_date = '01-01-2000'
     logger.log_text(
-        f"Checking for records updated since {last_run_time}...",
+        f"Checking for records updated since {last_run_date}...",
         severity='DEBUG'
     )
-    for index, customer in enumerate(emerge_service.get_all_customers()):
+    firestore_service.set_emerge_sync_last_run_date(last_run_date=start_time.strftime('%m-%d-%Y'))
+    for index, customer in enumerate(emerge_service.get_all_customers(since=last_run_date)):
         try:
-            if (customer.last_modified_date > last_run_time) or force:
-                scd = int(customer.status_change_date.timestamp() * 1000) if customer.status_change_date else None
-                cloud_tasks_service.enqueue(
-                    'hubspot/v1/company-sync/worker',
-                    payload=HubSpotCompanySyncRequest(
-                        emerge_company_id=customer.company_id,
-                        type='DEAL',
-                        object_id=customer.hubspot_object_id,
-                        days_from_last_report=customer.days_from_last_report,
-                        account_manager_email=customer.account_manager_email,
-                        status_change_date=scd
-                    ).dict()
-                )
+            scd = int(customer.status_change_date.timestamp() * 1000) if customer.status_change_date else None
+            cloud_tasks_service.enqueue(
+                'hubspot/v1/company-sync/worker',
+                payload=HubSpotCompanySyncRequest(
+                    emerge_company_id=customer.company_id,
+                    type='DEAL',
+                    object_id=customer.hubspot_object_id,
+                    days_from_last_report=customer.days_from_last_report,
+                    account_manager_email=customer.account_manager_email,
+                    status_change_date=scd
+                ).dict()
+            )
         except Exception as e:
             logger.log_text(
                 f"Job failed at customer {index + 1}: {customer.company_name} ({customer.company_id}) with the failure:"
