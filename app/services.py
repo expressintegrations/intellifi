@@ -206,7 +206,7 @@ class FirestoreService(BaseService):
         return settings['last_run_date']
 
     def set_emerge_sync_last_run_date(self, last_run_date: str):
-        doc = self.firestore_client.collection('hubspot_sync').document('settings')
+        doc = self.firestore_client.collection('emerge_sync').document('settings')
         settings = doc.get().to_dict()
         settings['last_run_date'] = last_run_date
         return doc.set(document_data=settings)

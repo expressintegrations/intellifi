@@ -7,9 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="add since param">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="00036cc2-3a3a-422a-a2b7-27baa3916f09" name="Changes" comment="ensure job failure picks up latest data" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -94,13 +92,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1654482756064</updated>
-    </task>
-    <task id="LOCAL-00053" summary="fix deals without companies">
-      <created>1658076701965</created>
-      <option name="number" value="00053" />
-      <option name="presentableId" value="LOCAL-00053" />
-      <option name="project" value="LOCAL" />
-      <updated>1658076701965</updated>
     </task>
     <task id="LOCAL-00054" summary="fix emerge test endpoint">
       <created>1658084927248</created>
@@ -438,7 +429,14 @@
       <option name="project" value="LOCAL" />
       <updated>1673849660287</updated>
     </task>
-    <option name="localTasksCounter" value="102" />
+    <task id="LOCAL-00102" summary="ensure job failure picks up latest data">
+      <created>1676839460552</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1676839460553</updated>
+    </task>
+    <option name="localTasksCounter" value="103" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -460,7 +458,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="reformatting" />
     <MESSAGE value="skip updates for blank values" />
     <MESSAGE value="adding change in sales" />
     <MESSAGE value="adding deal sync" />
@@ -485,6 +482,7 @@
     <MESSAGE value="add pandadoc proposal endpoint" />
     <MESSAGE value="updating format" />
     <MESSAGE value="add since param" />
-    <option name="LAST_COMMIT_MESSAGE" value="add since param" />
+    <MESSAGE value="ensure job failure picks up latest data" />
+    <option name="LAST_COMMIT_MESSAGE" value="ensure job failure picks up latest data" />
   </component>
 </project>

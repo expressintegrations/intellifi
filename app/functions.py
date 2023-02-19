@@ -232,6 +232,11 @@ def sync_emerge_companies_to_hubspot(
                 f" {str(e)}",
                 severity='DEBUG'
             )
+
+    logger.log_text(
+        f"Finished enqueueing tasks. Updating last run date to {start_time.strftime('%m-%d-%Y')}.",
+        severity='DEBUG'
+    )
     firestore_service.set_emerge_sync_last_run_date(last_run_date=start_time.strftime('%m-%d-%Y'))
 
 
