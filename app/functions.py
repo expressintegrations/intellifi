@@ -212,7 +212,6 @@ def sync_emerge_companies_to_hubspot(
         f"Checking for records updated since {last_run_date}...",
         severity='DEBUG'
     )
-    firestore_service.set_emerge_sync_last_run_date(last_run_date=start_time.strftime('%m-%d-%Y'))
     for index, customer in enumerate(emerge_service.get_all_customers(since=last_run_date)):
         try:
             scd = int(customer.status_change_date.timestamp() * 1000) if customer.status_change_date else None
@@ -233,6 +232,7 @@ def sync_emerge_companies_to_hubspot(
                 f" {str(e)}",
                 severity='DEBUG'
             )
+    firestore_service.set_emerge_sync_last_run_date(last_run_date=start_time.strftime('%m-%d-%Y'))
 
 
 @inject
