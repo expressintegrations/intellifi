@@ -2,8 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import List, Optional, Any
 
-import pydantic
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class PandadocProposalRequest(BaseModel):
@@ -70,7 +69,7 @@ class HubSpotAssociationFrom(BaseModel):
 
 
 class HubSpotAssociationResult(BaseModel):
-    from_object: HubSpotAssociationFrom = pydantic.Field(alias="from")
+    from_object: HubSpotAssociationFrom = Field(alias="from")
     to: List[HubSpotAssociation]
 
     def first(self):
@@ -88,49 +87,49 @@ class HubSpotAssociationBatchReadResponse(BaseModel):
 
 
 class EmergeSales(BaseModel):
-    volume: Optional[int] = pydantic.Field(alias="Volume")
-    sales: Optional[float] = pydantic.Field(alias="Sales")
+    volume: Optional[int] = Field(alias="Volume", default=None)
+    sales: Optional[float] = Field(alias="Sales", default=None)
 
     def to_string(self):
         return f"Volume: {self.volume}{' ⭐' if self.volume > 499 else ''}, Sales: {'${:,.2f}'.format(self.sales)}"
 
 
 class EmergeProductTypes(BaseModel):
-    number_of_packages: Optional[int] = pydantic.Field(alias="NumberOfPackages")
-    number_of_individual_reports: Optional[int] = pydantic.Field(alias="NumberOfIndividualReports")
+    number_of_packages: Optional[int] = Field(alias="NumberOfPackages", default=None)
+    number_of_individual_reports: Optional[int] = Field(alias="NumberOfIndividualReports", default=None)
 
     def to_string(self):
         return f"{self.number_of_packages} Packages, {self.number_of_individual_reports} Individual Reports"
 
 
 class EmergeCompanyInfo(BaseModel):
-    company_id: int = pydantic.Field(alias="EmergeCompanyId")
-    company_name: str = pydantic.Field(alias="EmergeCompanyName")
-    hubspot_object_id: Optional[int] = pydantic.Field(alias="HubSpotObjectId")
-    account_status: str = pydantic.Field(alias="AccountStatus")
-    date_opened: datetime = pydantic.Field(alias="DateOpened")
-    number_of_users: int = pydantic.Field(alias="NumberOfUsers")
-    number_of_locations: int = pydantic.Field(alias="NumberOfLocations")
-    days_from_last_report: Optional[int] = pydantic.Field(alias="DaysFromLastReport")
-    account_manager_email: Optional[str] = pydantic.Field(alias="AccountManagerEmail")
-    status_change_date: Optional[datetime] = pydantic.Field(alias="StatusChangeDate")
-    last_modified_date: Optional[datetime] = pydantic.Field(alias="LastModifiedDate")
+    company_id: int = Field(alias="EmergeCompanyId")
+    company_name: str = Field(alias="EmergeCompanyName")
+    hubspot_object_id: Optional[int] = Field(alias="HubSpotObjectId")
+    account_status: str = Field(alias="AccountStatus")
+    date_opened: datetime = Field(alias="DateOpened")
+    number_of_users: int = Field(alias="NumberOfUsers")
+    number_of_locations: int = Field(alias="NumberOfLocations")
+    days_from_last_report: Optional[int] = Field(alias="DaysFromLastReport", default=None)
+    account_manager_email: Optional[str] = Field(alias="AccountManagerEmail", default=None)
+    status_change_date: Optional[datetime] = Field(alias="StatusChangeDate", default=None)
+    last_modified_date: Optional[datetime] = Field(alias="LastModifiedDate", default=None)
 
 
 class EmergeCompanyBillingInfo(BaseModel):
-    company_id: Optional[int] = pydantic.Field(alias="EmergeCompanyId")
-    company_name: Optional[str] = pydantic.Field(alias="EmergeCompanyName")
-    account_status: Optional[str] = pydantic.Field(alias="AccountStatus")
-    date_opened: Optional[datetime] = pydantic.Field(alias="DateOpened")
-    number_of_users: Optional[int] = pydantic.Field(alias="NumberOfUsers")
-    number_of_locations: Optional[int] = pydantic.Field(alias="NumberOfLocations")
-    last_report_run: Optional[datetime] = pydantic.Field(alias="LastReportRun")
-    sales_last_month: Optional[EmergeSales] = pydantic.Field(alias="SalesLastMonth")
-    sales_current_month: Optional[EmergeSales] = pydantic.Field(alias="SalesCurrentMonth")
-    sales_ytd: Optional[EmergeSales] = pydantic.Field(alias="SalesYTD")
-    product_types_last_month: Optional[EmergeProductTypes] = pydantic.Field(alias="ProductsTypeLastMonth")
-    product_types_current_month: Optional[EmergeProductTypes] = pydantic.Field(alias="ProductsTypeCurrentMonth")
-    product_types_ytd: Optional[EmergeProductTypes] = pydantic.Field(alias="ProductsTypeYTD")
+    company_id: Optional[int] = Field(alias="EmergeCompanyId", default=None)
+    company_name: Optional[str] = Field(alias="EmergeCompanyName", default=None)
+    account_status: Optional[str] = Field(alias="AccountStatus", default=None)
+    date_opened: Optional[datetime] = Field(alias="DateOpened", default=None)
+    number_of_users: Optional[int] = Field(alias="NumberOfUsers", default=None)
+    number_of_locations: Optional[int] = Field(alias="NumberOfLocations", default=None)
+    last_report_run: Optional[datetime] = Field(alias="LastReportRun", default=None)
+    sales_last_month: Optional[EmergeSales] = Field(alias="SalesLastMonth", default=None)
+    sales_current_month: Optional[EmergeSales] = Field(alias="SalesCurrentMonth", default=None)
+    sales_ytd: Optional[EmergeSales] = Field(alias="SalesYTD", default=None)
+    product_types_last_month: Optional[EmergeProductTypes] = Field(alias="ProductsTypeLastMonth", default=None)
+    product_types_current_month: Optional[EmergeProductTypes] = Field(alias="ProductsTypeCurrentMonth", default=None)
+    product_types_ytd: Optional[EmergeProductTypes] = Field(alias="ProductsTypeYTD", default=None)
 
     def to_hubspot_company(
         self,
