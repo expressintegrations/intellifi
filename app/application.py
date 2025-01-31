@@ -1,6 +1,5 @@
 from ExpressIntegrations.Utils import Utils
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from google.cloud import firestore
 
 from . import endpoints, functions
@@ -11,6 +10,7 @@ origins = [
     "http://localhost",
     "http://localhost:8080",
     "https://app.hubspot.com",
+    "https://5653905.hubspotpreview-na1.com",
 ]
 
 
@@ -66,13 +66,6 @@ def create_app(env: str = 'prod') -> FastAPI:
 
     # Initialize the API with the endpoints
     app = FastAPI()
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
     app.container = container
     app.include_router(endpoints.router)
     return app
