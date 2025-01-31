@@ -10,6 +10,7 @@ origins = [
     "https://intelifi-5653905.hs-sites.com",
     "http://localhost",
     "http://localhost:8080",
+    "https://app.hubspot.com",
 ]
 
 
