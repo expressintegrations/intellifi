@@ -278,7 +278,7 @@ class EmergeService(BaseService):
     def get_all_customers(self, since: str = ''):
         self.logger.log_text('Getting all customers', severity='DEBUG')
         customers = self.emerge_client.customers(start=0, end=1000000000, since=since)
-        return [EmergeCompanyInfo.parse_obj(customer) for customer in customers]
+        return [EmergeCompanyInfo.model_validate(customer) for customer in customers]
 
     def get_customer_billing_info(self, company_id: int, year: int, month: int):
         self.logger.log_text(f"Getting customer {company_id}", severity='DEBUG')
@@ -287,7 +287,7 @@ class EmergeService(BaseService):
             year=year,
             month=month
         ) if company_id else {}
-        return EmergeCompanyBillingInfo.parse_obj(billing_info)
+        return EmergeCompanyBillingInfo.model_validate(billing_info)
 
 
 class HubSpotService(BaseService):

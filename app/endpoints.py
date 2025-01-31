@@ -43,7 +43,7 @@ async def get_proposal_session(
 ):
     body = await request.json()
     print(body)
-    pandadoc_proposal_request = PandadocProposalRequest.parse_obj(body)
+    pandadoc_proposal_request = PandadocProposalRequest.model_validate(body)
     return functions.get_pandadoc_proposal_session(pandadoc_proposal_request=pandadoc_proposal_request)
 
 
@@ -92,7 +92,7 @@ async def get_emerge_company_crm_card(
     if associated_object_type == 'COMPANY':
         cloud_tasks_service.enqueue(
             'hubspot/v1/company-sync/worker',
-            payload=hubspot_company_sync_request.dict()
+            payload=hubspot_company_sync_request.model_dump(exclude_unset=True, exclude_none=True)
         )
     return functions.get_emerge_company(
         hubspot_company_sync_request=hubspot_company_sync_request
@@ -138,7 +138,7 @@ async def process_hubspot_events(
                     'hubspot/v1/deal-sync/worker',
                     payload=HubSpotDealSyncRequest(
                         object_id=event.objectId
-                    ).dict()
+                    ).model_dump(exclude_unset=True, exclude_none=True)
                 )
 
             if event.propertyName == 'pricing_tier' and event.subscriptionType == 'deal.propertyChange':
@@ -150,7 +150,7 @@ async def process_hubspot_events(
                     payload=HubSpotLineItemSyncRequest(
                         object_id=event.objectId,
                         pricing_tier=event.propertyValue if event.propertyValue != '' else None
-                    ).dict()
+                    ).model_dump(exclude_unset=True, exclude_none=True)
                 )
     except Exception:
         logger.log_text(

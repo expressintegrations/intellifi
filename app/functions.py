@@ -224,7 +224,7 @@ def sync_emerge_companies_to_hubspot(
                     days_from_last_report=customer.days_from_last_report,
                     account_manager_email=customer.account_manager_email,
                     status_change_date=scd
-                ).dict()
+                ).model_dump(exclude_unset=True, exclude_none=True)
             )
         except Exception as e:
             logger.log_text(
